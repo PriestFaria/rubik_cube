@@ -1,11 +1,10 @@
 //
 // Created by Timur on 06.04.2024.
 //
-
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "Window.h"
 #include <iostream>
-
 GLFWwindow *Window::window;
 
 int Window::initialize(int width, int height, const char *title) {
@@ -14,7 +13,6 @@ int Window::initialize(int width, int height, const char *title) {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-
     Window::window = glfwCreateWindow(width, height, title, nullptr, nullptr);
     if (window == nullptr) {
         std::cerr << "Failed to create window" << std::endl;
@@ -22,7 +20,15 @@ int Window::initialize(int width, int height, const char *title) {
         return -1;
     }
     glfwMakeContextCurrent(window);
+    //init GLEW
+    glewExperimental = GL_TRUE;
+    if(glewInit() != GLEW_OK){
+        std::cerr << "Failed to initialize GLEW" << std::endl;
+        return -1;
+    }
 }
+
+
 
 bool Window::isShouldClose() {
     return glfwWindowShouldClose(window);

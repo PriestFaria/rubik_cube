@@ -1,6 +1,19 @@
+#ifndef GRAPHICS_SHADER_H_
+#define GRAPHICS_SHADER_H_
 
+#include <string>
+#include <glm/glm.hpp>
 
-#ifndef OPENGL_TUTORIAL_SHADER_H
-#define OPENGL_TUTORIAL_SHADER_H
+class Shader {
+public:
+    unsigned int id;
 
-#endif //OPENGL_TUTORIAL_SHADER_H
+    Shader(unsigned int id);
+    ~Shader();
+
+    void use();
+};
+
+extern Shader* load_shader(std::string vertexFile, std::string fragmentFile);
+
+#endif /* GRAPHICS_SHADER_H_ */

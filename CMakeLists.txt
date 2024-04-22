@@ -12,7 +12,9 @@ add_executable(opengl_tutorial src/main.cpp
         src/Window/Window.h
         src/Window/Window.cpp
         src/Window/Events.h
-        src/Window/Events.cpp)
+        src/Window/Events.cpp
+        src/graphics/Shader.h
+        src/graphics/Shader.cpp)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
