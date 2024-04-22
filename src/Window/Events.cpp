@@ -4,8 +4,8 @@
 
 #include "Events.h"
 #include <cstring>
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
-
 bool *Events::keys;
 unsigned int *Events::frames;
 unsigned int Events::current = 0;
@@ -40,6 +40,10 @@ void mouse_button_callback(GLFWwindow *window, int button, int action, int mode)
     }
 }
 
+//void window_size_callback(GLFWwindow* window, int width, int height){
+//    glViewport(0, 0, width, height);
+//}
+//
 void key_callback(GLFWwindow *window, int key, int scancode, int action, int mode) {
     if (action == GLFW_PRESS) {
         Events::keys[key] = true;
@@ -62,6 +66,7 @@ int Events::initialize() {
     glfwSetKeyCallback(window, key_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetCursorPosCallback(window, cursor_position_callback);
+//    glfwSetWindowSizeCallback(window, window_size_callback);
     return 0;
 }
 
@@ -94,4 +99,9 @@ void Events::pullEvents() {
     dX = 0.0f;
     dY = 0.0f;
     glfwPollEvents();
+}
+
+void Events::toggleCursor() {
+    cursor_locked = !cursor_locked;
+    Window::setCursorMode(cursor_locked ? GLFW_CURSOR_DISABLED : GLFW_CURSOR_NORMAL);
 }

@@ -9,6 +9,8 @@ class GLFWwindow;
 
 class Window {
 public:
+    static int width;
+    static int height;
     static int initialize(int width, int height, const char *title);
 
     static void terminate();
@@ -20,6 +22,8 @@ public:
     static void swapBuffers();
 
     static GLFWwindow *window;
+
+    static void setCursorMode(int mode);
 };
 
 #endif //OPENGL_TUTORIAL_WINDOW_H

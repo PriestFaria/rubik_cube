@@ -12,6 +12,7 @@ public:
     ~Shader();
 
     void use();
+    void uniformMatrix(std::string name, glm::mat4 matrix);
 };
 
 extern Shader* load_shader(std::string vertexFile, std::string fragmentFile);

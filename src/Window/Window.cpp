@@ -8,6 +8,8 @@
 GLFWwindow *Window::window;
 
 int Window::initialize(int width, int height, const char *title) {
+    height = height;
+    width = width;
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
@@ -36,7 +38,6 @@ bool Window::isShouldClose() {
 
 void Window::swapBuffers() {
 
-
     glfwSwapBuffers(Window::window);
 }
 
@@ -47,4 +48,8 @@ void Window::setShouldClose(bool flag) {
 void Window::terminate() {
 
     glfwTerminate();
+}
+
+void Window::setCursorMode(int mode) {
+    glfwSetInputMode(window, GLFW_CURSOR, mode);
 }
