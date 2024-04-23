@@ -13,6 +13,80 @@ RubikCube::RubikCube(Shader *shader) : shader(shader) {
     st = std::vector<char>();
 }
 
+
+
+void RubikCube::rotate_front(float angle) {
+
+    for (int x = 0; x < 3; ++x) {
+        for (int y = 0; y < 3; ++y) {
+            glm::vec3 center = glm::vec3(2.0f, 2.0f, 1.0f); // Берем позицию (x, y, z) центрального кубика
+            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(angle),
+                                             glm::vec3(0.0f, 0.0f, -1.0f));
+            glm::mat4 translation = glm::translate(glm::mat4(1.0f),
+                                                   -center); // Перемещаем в противоположную сторону от центра
+            glm::mat4 invTranslation = glm::translate(glm::mat4(1.0f),
+                                                      center); // Возвращаем кубики обратно после вращения
+            cubes[x][y][0].model = invTranslation * rotation * translation * cubes[x][y][0].model;
+        }
+    }
+
+}
+
+void RubikCube::swap_vertical_matrix_front() {
+    // Теперь нужно выполнить транспонирование матрицы, чтобы переставить элементы правильно
+    for (int i = 0; i < 3; ++i) {
+        for (int j = i+1; j < 3; ++j) {
+            std::swap(cubes[i][j][0], cubes[j][i][0]);
+        }
+    }
+    // Меняем местами элементы в каждой строке передней грани
+    for (int i = 0; i < 3; ++i) {
+        for (int j = 0; j < 3 / 2; ++j) {
+            std::swap(cubes[i][j][0], cubes[i][3 - j - 1][0]);
+        }
+    }
+
+}
+
+
+
+void RubikCube::rotate_back(float angle) {
+
+    for (int x = 0; x < 3; ++x) {
+        for (int y = 0; y < 3; ++y) {
+            glm::vec3 center = glm::vec3(2.0f, 2.0f, 1.0f); // Берем позицию (x, y, z) центрального кубика
+            glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(angle),
+                                             glm::vec3(0.0f, 0.0f, -1.0f));
+            glm::mat4 translation = glm::translate(glm::mat4(1.0f),
+                                                   -center); // Перемещаем в противоположную сторону от центра
+            glm::mat4 invTranslation = glm::translate(glm::mat4(1.0f),
+                                                      center); // Возвращаем кубики обратно после вращения
+            cubes[x][y][2].model = invTranslation * rotation * translation * cubes[x][y][2].model;
+        }
+    }
+
+}
+
+
+void RubikCube::swap_vertical_matrix_back() {
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = i + 1; j < 3; j++) {
+            std::swap(cubes[i][j][2], cubes[j][i][2]);
+        }
+    }
+
+    for (int i = 0; i < 3; i++) {
+        for (int j = 0; j < 3 / 2; j++) {
+            std::swap(cubes[i][j][2], cubes[i][3 - j - 1][2]);
+        }
+    }
+
+}
+
+
+
+
 void RubikCube::draw() {
     for (int x = 0; x < 3; ++x) {
         for (int y = 0; y < 3; ++y) {
@@ -109,9 +183,9 @@ void RubikCube::load_from_file(const char *filename) {
                 st.push_back('1');
             }
             if (line[0] == '2') {
-                //средняя горизонтальная
-                rotate_horizontal(1, 90.0f);
-                swap_horizontal_matrix(1);
+                //передняя
+                rotate_front(90.0f);
+                swap_vertical_matrix_front();
                 st.push_back('2');
             }
             if (line[0] == '3') {
@@ -127,15 +201,15 @@ void RubikCube::load_from_file(const char *filename) {
                 st.push_back('4');
             }
             if (line[0] == '5') {
-                //средняя вертикальная
-                rotate_vertical(1, 90.0f);
-                swap_vertical_matrix(1);
+                //задняя грань
+                rotate_back(90.0f);
+                swap_vertical_matrix_back();
                 st.push_back('5');
             }
             if (line[0] == '6') {
                 //право
-                rotate_vertical(2, 90.0f);
-                swap_vertical_matrix(2);
+                rotate_vertical(0, 90.0f);
+                swap_vertical_matrix(0);
                 st.push_back('6');
             }
 
@@ -143,14 +217,13 @@ void RubikCube::load_from_file(const char *filename) {
     }
     in.close();
 }
-
 void RubikCube::solve(float angle) {
     std::vector<char> reversedSt(st.rbegin(), st.rend());
     for (auto k: reversedSt) {
         if (k == '1') {
             //верх
             for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90/angle; ++i) {
+                for (int i = 0; i < 90 / angle; ++i) {
                     rotate_horizontal(2, angle);
                     draw();
                     Window::swapBuffers();
@@ -161,21 +234,21 @@ void RubikCube::solve(float angle) {
             }
         }
         if (k == '2') {
-            //средняя горизонтальная
+            //передняя
             for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90/angle; ++i) {
-                    rotate_horizontal(1, angle);
+                for (int i = 0; i < 90 / angle; ++i) {
+                    rotate_front(angle);
                     draw();
                     Window::swapBuffers();
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 }
-                swap_horizontal_matrix(1);
+                swap_vertical_matrix_front();
             }
         }
         if (k == '3') {
             //низ
             for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90/angle; ++i) {
+                for (int i = 0; i < 90 / angle; ++i) {
                     rotate_horizontal(0, angle);
                     draw();
                     Window::swapBuffers();
@@ -187,7 +260,7 @@ void RubikCube::solve(float angle) {
         if (k == '4') {
             //лево
             for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90/angle; ++i) {
+                for (int i = 0; i < 90 / angle; ++i) {
                     rotate_vertical(2, angle);
                     draw();
                     Window::swapBuffers();
@@ -199,25 +272,25 @@ void RubikCube::solve(float angle) {
         if (k == '5') {
             //средняя вертикальная
             for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90/angle; ++i) {
-                    rotate_vertical(1, angle);
+                for (int i = 0; i < 90 / angle; ++i) {
+                    rotate_back(angle);
                     draw();
                     Window::swapBuffers();
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 }
-                swap_vertical_matrix(1);
+                swap_vertical_matrix_back();
             }
         }
         if (k == '6') {
             //право
             for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90/angle; ++i) {
-                    rotate_vertical(2, angle);
+                for (int i = 0; i < 90 / angle; ++i) {
+                    rotate_vertical(0, angle);
                     draw();
                     Window::swapBuffers();
                     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
                 }
-                swap_vertical_matrix(2);
+                swap_vertical_matrix(0);
             }
         }
     }

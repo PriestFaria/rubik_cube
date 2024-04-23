@@ -30,6 +30,10 @@ public:
 
     void swap_horizontal_matrix(int layer);
 
+    void rotate_front(float angle);
+
+    void rotate_back(float angle);
+
     void rotate_vertical(int layer, float angle);
 
     void swap_vertical_matrix(int layer);
@@ -37,6 +41,10 @@ public:
     void load_from_file(const char* filename);
 
     void solve(float angle);
+
+    void swap_vertical_matrix_front();
+
+    void swap_vertical_matrix_back();
 };
 
 

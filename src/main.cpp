@@ -105,14 +105,16 @@ int main(void) {
 
 
         if (Events::jpressed(GLFW_KEY_B)) {
-            // Вращение средней горизонтальной грани кубика
+            // Вращение передней грани кубика
+
+
             for (int i = 0; i < 45; ++i) {
-                cube.rotate_horizontal(1, 2.0f);
+                cube.rotate_front(2.0f);
                 cube.draw();
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
-            cube.swap_horizontal_matrix(1);
+            cube.swap_vertical_matrix_front();
             if (out.is_open())
                 out << "2" << std::endl;
         }
@@ -158,15 +160,17 @@ int main(void) {
         }
 
         if (Events::jpressed(GLFW_KEY_H)) {
-            // Вращение средней вертикальной грани кубика
+            // Вращение задней  грани кубика
+
+            //на деле тут зад вертикальный
             for (int i = 0; i < 45; ++i) {
-                cube.rotate_vertical(1, 2.0f);
+                cube.rotate_back(2.0f);
                 cube.draw();
 
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
-            cube.swap_vertical_matrix(1);
+            cube.swap_vertical_matrix_back();
             if (out.is_open())
                 out << "5" << std::endl;
         }
@@ -197,9 +201,9 @@ int main(void) {
 
 //горизонтальные
 //1 - верхняя
-//2 - средняя
+//2 - передняя
 //3 - нижняя
 //вертикальные
 //4 - левая
-//5 - средняя
+//5 - задняя
 //6 - правая
