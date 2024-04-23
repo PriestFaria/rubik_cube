@@ -9,15 +9,17 @@
 #include <glm/ext.hpp>
 #include <iostream>
 #include "Cube/Cube.cpp"
+#include <vector>
+
 int WIDTH = 1280;
 int HEIGHT = 720;
 
-float vertices[] = {-1.0f, -1.0f, -1.0f, // triangle 1 : begin
+float vertices[] = {-1.0f, -1.0f, -1.0f,
                     -1.0f, -1.0f, 1.0f,
-                    -1.0f, 1.0f, 1.0f, // triangle 1 : end
-                    1.0f, 1.0f, -1.0f, // triangle 2 : begin
+                    -1.0f, 1.0f, 1.0f,
+                    1.0f, 1.0f, -1.0f,
                     -1.0f, -1.0f, -1.0f,
-                    -1.0f, 1.0f, -1.0f, // triangle 2 : end
+                    -1.0f, 1.0f, -1.0f,
                     1.0f, -1.0f, 1.0f,
                     -1.0f, -1.0f, -1.0f,
                     1.0f, -1.0f, -1.0f,
@@ -50,53 +52,6 @@ float vertices[] = {-1.0f, -1.0f, -1.0f, // triangle 1 : begin
                     1.0f, -1.0f, 1.0f
 };
 
-float colors_data1[] = {1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-                       1.0f, 0.0f, 0.0f,
-
-                       };
-
-float colors_data2[] = {0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-                        0.0f, 1.0f, 0.0f,
-
-};
-
 
 int Window::width = WIDTH;
 int Window::height = HEIGHT;
@@ -111,16 +66,13 @@ int main(void) {
         return 1;
     }
 
-    // Enable depth test
     glEnable(GL_DEPTH_TEST);
-// Accept fragment if it closer to the camera than the former one
     glDepthFunc(GL_LESS);
 
     //create VAO
     GLuint VAO, VBO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-
 
 
     glBindVertexArray(VAO);
@@ -137,14 +89,15 @@ int main(void) {
 //    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
 //    glBufferData(GL_ARRAY_BUFFER, sizeof(colors_data1), colors_data1, GL_STATIC_DRAW);
     size_t vertices_size = sizeof(vertices);
-    size_t colors_size1 = sizeof(colors_data1);
-    size_t colors_size2 = sizeof(colors_data2);
-
-    Cube cube1(vertices, colors_data1, vertices_size, colors_size1);
-    Cube cube2(vertices, colors_data2, vertices_size, colors_size2);
 
 
+//    Cube cube1(vertices, vertices_size);
+//    Cube cube2(vertices, vertices_size);
 
+
+    std::vector<std::vector<std::vector<Cube> > > cubes(3, std::vector<std::vector<Cube> >(3, std::vector<Cube>(3,
+                                                                                                          Cube(vertices,
+                                                                                                               vertices_size))));
 
     glClearColor(0.6f, 0.62f, 0.65f, 1);
 
@@ -214,17 +167,26 @@ int main(void) {
                 GL_FLOAT,                         // type
                 GL_FALSE,                         // normalized?
                 0,                                // stride
-                (void*)0                          // array buffer offset
+                (void *) 0                          // array buffer offset
         );
 
-        // Рисуем первый куб
-        glm::mat4 model1 = glm::translate(model, glm::vec3(-2.0f, 0.0f, 0.0f)); // смещаем первый куб влево
-        cube1.draw(shader, model1);
-
-        // Рисуем второй куб
-        glm::mat4 model2 = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f)); // смещаем второй куб вправо
-        cube2.draw(shader, model2) ;
-
+//        // Рисуем первый куб
+//        glm::mat4 model1 = glm::translate(model, glm::vec3(-2.0f, 0.0f, 0.0f)); // смещаем первый куб влево
+//        cube1.draw(shader, model1);
+//
+//        // Рисуем второй куб
+//        glm::mat4 model2 = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f)); // смещаем второй куб вправо
+//        cube2.draw(shader, model2);
+//
+        for (int x = 0; x < 3; ++x) {
+            for (int y = 0; y < 3; ++y) {
+                for (int z = 0; z < 3; ++z) {
+                    glm::mat4 model_cube = glm::translate(model, glm::vec3((float) (2.0f * x + 0.1f*x), (float) (2.0f * y +  0.1f*y),
+                                                                           (float) (2.0f * z +  0.1f*z)));
+                    cubes[x][y][z].draw(shader, model_cube);
+                }
+            }
+        }
         glBindVertexArray(0);
 
         Window::swapBuffers();
