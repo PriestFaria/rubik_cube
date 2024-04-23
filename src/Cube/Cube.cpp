@@ -1,104 +1,139 @@
 
 #include <GL/glew.h>
 #include "../graphics/Shader.h"
+#include "Cube.h"
 
-class Cube {
-public:
-    Cube(float *vertices, size_t size) : vertices(vertices) {
-        float colors[108] = {
-                //left down
-                0.0f, 1.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
+Cube::Cube() {
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+    glGenBuffers(1, &colorbuffer);
+    model = glm::mat4(1.0f);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *) (0 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(0);
 
-                //back up
-                1.0f, 1.0f, 1.0f,
-                1.0f, 1.0f, 1.0f,
-                1.0f, 1.0f, 1.0f,
+    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *) (0 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
 
-                //bottom_up
-                1.0f, 0.5f, 0.0f,
-                1.0f, 0.5f, 0.0f,
-                1.0f, 0.5f, 0.0f,
+    glBindVertexArray(0);
+}
+
+void Cube::draw(Shader *shader, glm::mat4 model) {
+    shader->use();
+    shader->uniformMatrix("model", model);
+    glBindVertexArray(Cube::VAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+}
 
 
 
-                //back_down
-                1.0f, 1.0f, 1.0f,
-                1.0f, 1.0f, 1.0f,
-                1.0f, 1.0f, 1.0f,
 
-                //left up
-                0.0f, 1.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
-                0.0f, 1.0f, 0.0f,
 
-                // bottom down
-                1.0f, 0.5f, 0.0f,
-                1.0f, 0.5f, 0.0f,
-                1.0f, 0.5f, 0.0f,
+float Cube::colors[108] = {
+        //left down
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
 
-                //front_down
-                1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 0.0f,
+        //back up
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
 
-                //right_up
-                0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f,
+        //bottom_up
+        1.0f, 0.5f, 0.0f,
+        1.0f, 0.5f, 0.0f,
+        1.0f, 0.5f, 0.0f,
 
-                //right down
-                0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f,
-                0.0f, 0.0f, 1.0f,
 
-                //up up
-                1.0f, 0.0f, 0.0f,
-                1.0f, 0.0f, 0.0f,
-                1.0f, 0.0f, 0.0f,
 
-                //up down
-                1.0f, 0.0f, 0.0f,
-                1.0f, 0.0f, 0.0f,
-                1.0f, 0.0f, 0.0f,
+        //back_down
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
 
-                //front up
-                1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 0.0f,
-                1.0f, 1.0f, 0.0f,
-        };
+        //left up
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
+        0.0f, 1.0f, 0.0f,
 
-        glGenVertexArrays(1, &VAO);
-        glGenBuffers(1, &VBO);
-        glGenBuffers(1, &colorbuffer);
+        // bottom down
+        1.0f, 0.5f, 0.0f,
+        1.0f, 0.5f, 0.0f,
+        1.0f, 0.5f, 0.0f,
 
-        glBindVertexArray(VAO);
-        glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        glBufferData(GL_ARRAY_BUFFER,size, vertices, GL_STATIC_DRAW);
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *) (0 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(0);
+        //front_down
+        1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 0.0f,
 
-        glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *) (0 * sizeof(GLfloat)));
-        glEnableVertexAttribArray(1);
+        //right_up
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
 
-        glBindVertexArray(0);
-    }
+        //right down
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
+        0.0f, 0.0f, 1.0f,
 
-    void draw(Shader *shader, glm::mat4 model) {
-        shader->use();
-        shader->uniformMatrix("model", model);
-        glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
-        glBindVertexArray(0);
-    }
+        //up up
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
 
-private:
+        //up down
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
+        1.0f, 0.0f, 0.0f,
 
-    float *vertices;
-    GLuint VAO, VBO, colorbuffer;
-    float *colors;
+        //front up
+        1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 0.0f,
+        1.0f, 1.0f, 0.0f,
+};
+
+
+float Cube::vertices[108] = {-1.0f, -1.0f, -1.0f,
+                    -1.0f, -1.0f, 1.0f,
+                    -1.0f, 1.0f, 1.0f,
+                    1.0f, 1.0f, -1.0f,
+                    -1.0f, -1.0f, -1.0f,
+                    -1.0f, 1.0f, -1.0f,
+                    1.0f, -1.0f, 1.0f,
+                    -1.0f, -1.0f, -1.0f,
+                    1.0f, -1.0f, -1.0f,
+                    1.0f, 1.0f, -1.0f,
+                    1.0f, -1.0f, -1.0f,
+                    -1.0f, -1.0f, -1.0f,
+                    -1.0f, -1.0f, -1.0f,
+                    -1.0f, 1.0f, 1.0f,
+                    -1.0f, 1.0f, -1.0f,
+                    1.0f, -1.0f, 1.0f,
+                    -1.0f, -1.0f, 1.0f,
+                    -1.0f, -1.0f, -1.0f,
+                    -1.0f, 1.0f, 1.0f,
+                    -1.0f, -1.0f, 1.0f,
+                    1.0f, -1.0f, 1.0f,
+                    1.0f, 1.0f, 1.0f,
+                    1.0f, -1.0f, -1.0f,
+                    1.0f, 1.0f, -1.0f,
+                    1.0f, -1.0f, -1.0f,
+                    1.0f, 1.0f, 1.0f,
+                    1.0f, -1.0f, 1.0f,
+                    1.0f, 1.0f, 1.0f,
+                    1.0f, 1.0f, -1.0f,
+                    -1.0f, 1.0f, -1.0f,
+                    1.0f, 1.0f, 1.0f,
+                    -1.0f, 1.0f, -1.0f,
+                    -1.0f, 1.0f, 1.0f,
+                    1.0f, 1.0f, 1.0f,
+                    -1.0f, 1.0f, 1.0f,
+                    1.0f, -1.0f, 1.0f
 };
 

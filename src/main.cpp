@@ -8,49 +8,12 @@
 #include <glm/glm.hpp>
 #include <glm/ext.hpp>
 #include <iostream>
-#include "Cube/Cube.cpp"
+#include "Cube/Cube.h"
 #include <vector>
 
 int WIDTH = 1280;
 int HEIGHT = 720;
 
-float vertices[] = {-1.0f, -1.0f, -1.0f,
-                    -1.0f, -1.0f, 1.0f,
-                    -1.0f, 1.0f, 1.0f,
-                    1.0f, 1.0f, -1.0f,
-                    -1.0f, -1.0f, -1.0f,
-                    -1.0f, 1.0f, -1.0f,
-                    1.0f, -1.0f, 1.0f,
-                    -1.0f, -1.0f, -1.0f,
-                    1.0f, -1.0f, -1.0f,
-                    1.0f, 1.0f, -1.0f,
-                    1.0f, -1.0f, -1.0f,
-                    -1.0f, -1.0f, -1.0f,
-                    -1.0f, -1.0f, -1.0f,
-                    -1.0f, 1.0f, 1.0f,
-                    -1.0f, 1.0f, -1.0f,
-                    1.0f, -1.0f, 1.0f,
-                    -1.0f, -1.0f, 1.0f,
-                    -1.0f, -1.0f, -1.0f,
-                    -1.0f, 1.0f, 1.0f,
-                    -1.0f, -1.0f, 1.0f,
-                    1.0f, -1.0f, 1.0f,
-                    1.0f, 1.0f, 1.0f,
-                    1.0f, -1.0f, -1.0f,
-                    1.0f, 1.0f, -1.0f,
-                    1.0f, -1.0f, -1.0f,
-                    1.0f, 1.0f, 1.0f,
-                    1.0f, -1.0f, 1.0f,
-                    1.0f, 1.0f, 1.0f,
-                    1.0f, 1.0f, -1.0f,
-                    -1.0f, 1.0f, -1.0f,
-                    1.0f, 1.0f, 1.0f,
-                    -1.0f, 1.0f, -1.0f,
-                    -1.0f, 1.0f, 1.0f,
-                    1.0f, 1.0f, 1.0f,
-                    -1.0f, 1.0f, 1.0f,
-                    1.0f, -1.0f, 1.0f
-};
 
 
 int Window::width = WIDTH;
@@ -69,35 +32,22 @@ int main(void) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-    //create VAO
-    GLuint VAO, VBO;
-    glGenVertexArrays(1, &VAO);
-    glGenBuffers(1, &VBO);
 
 
-    glBindVertexArray(VAO);
-    glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    //position
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid *) (0 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(0);
-    glBindVertexArray(0);
-
-    //colors
-//    GLuint colorbuffer;
-//    glGenBuffers(1, &colorbuffer);
-//    glBindBuffer(GL_ARRAY_BUFFER, colorbuffer);
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(colors_data1), colors_data1, GL_STATIC_DRAW);
-    size_t vertices_size = sizeof(vertices);
-
-
-//    Cube cube1(vertices, vertices_size);
-//    Cube cube2(vertices, vertices_size);
 
 
     std::vector<std::vector<std::vector<Cube> > > cubes(3, std::vector<std::vector<Cube> >(3, std::vector<Cube>(3,
-                                                                                                          Cube(vertices,
-                                                                                                               vertices_size))));
+                                                                                                          Cube())));
+
+    for (int x = 0; x < 3; ++x) {
+        for (int y = 0; y < 3; ++y) {
+            for (int z = 0; z < 3; ++z) {
+                cubes[x][y][z].model = glm::translate(cubes[x][y][z].model, glm::vec3((float) (2.0f * x), (float) (2.0f * y ),
+                                                                                      (float) (2.0f * z )));
+            }
+        }
+    }
+
 
     glClearColor(0.6f, 0.62f, 0.65f, 1);
 
@@ -147,6 +97,25 @@ int main(void) {
             camera->position -= camera->up * delta * speed;
         }
 
+
+        if (Events::jpressed(GLFW_KEY_F)) {
+            // Вращение верхней грани кубика
+            for(int x = 0; x < 3; ++x){
+                for(int z = 0; z < 3; ++z){
+                    // Находим центральный кубик грани
+                    glm::vec3 center = glm::vec3(2.0f,3.0f,2.0f);// Берем позицию (x, y, z) центрального кубика
+                    // Создаем матрицу вращения
+                    glm::mat4 rotation = glm::rotate(glm::mat4(1.0f),  glm::radians(90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+                    // Перемещаем кубики в центр грани
+                    glm::mat4 translation = glm::translate(glm::mat4(1.0f), -center); // Перемещаем в противоположную сторону от центра
+                    glm::mat4 invTranslation = glm::translate(glm::mat4(1.0f), center); // Возвращаем кубики обратно после вращения
+                    // Применяем матрицу вращения и перемещения к каждому кубу в грани
+                    cubes[x][2][z].model = invTranslation * rotation * translation * cubes[x][2][z].model;
+                }
+            }
+        }
+
+
         camX += -Events::dX / Window::height;
 
         camY += -Events::dY / Window::height;
@@ -158,7 +127,6 @@ int main(void) {
 
         shader->use();
         shader->uniformMatrix("projview", camera->getProjection() * camera->getView());
-        glBindVertexArray(VAO);
 
         glEnableVertexAttribArray(1);
         glVertexAttribPointer(
@@ -170,20 +138,14 @@ int main(void) {
                 (void *) 0                          // array buffer offset
         );
 
-//        // Рисуем первый куб
-//        glm::mat4 model1 = glm::translate(model, glm::vec3(-2.0f, 0.0f, 0.0f)); // смещаем первый куб влево
-//        cube1.draw(shader, model1);
-//
-//        // Рисуем второй куб
-//        glm::mat4 model2 = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f)); // смещаем второй куб вправо
-//        cube2.draw(shader, model2);
-//
+
+
+
+
         for (int x = 0; x < 3; ++x) {
             for (int y = 0; y < 3; ++y) {
                 for (int z = 0; z < 3; ++z) {
-                    glm::mat4 model_cube = glm::translate(model, glm::vec3((float) (2.0f * x + 0.1f*x), (float) (2.0f * y +  0.1f*y),
-                                                                           (float) (2.0f * z +  0.1f*z)));
-                    cubes[x][y][z].draw(shader, model_cube);
+                    cubes[x][y][z].draw(shader, cubes[x][y][z].model);
                 }
             }
         }
