@@ -5,11 +5,8 @@
 #include "Window/Window.h"
 #include "graphics/Shader.h"
 #include "Camera/Camera.h"
-#include <glm/glm.hpp>
-#include <glm/ext.hpp>
 #include <iostream>
-#include "Cube/Cube.h"
-#include <vector>
+#include "RubikCube/RubikCube.h"
 
 int WIDTH = 1280;
 int HEIGHT = 720;
@@ -32,20 +29,8 @@ int main(void) {
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
 
-
-    std::vector<std::vector<std::vector<Cube> > > cubes(3, std::vector<std::vector<Cube> >(3, std::vector<Cube>(3,
-                                                                                                                Cube())));
-
-    for (int x = 0; x < 3; ++x) {
-        for (int y = 0; y < 3; ++y) {
-            for (int z = 0; z < 3; ++z) {
-                cubes[x][y][z].model = glm::translate(cubes[x][y][z].model,
-                                                      glm::vec3((float) (2.0f * x), (float) (2.0f * y),
-                                                                (float) (2.0f * z)));
-            }
-        }
-    }
-
+    RubikCube cube(shader);
+    cube.make_grid();
 
     glClearColor(0.6f, 0.62f, 0.65f, 1);
 
@@ -71,9 +56,7 @@ int main(void) {
         if (Events::jpressed(GLFW_KEY_ESCAPE)) {
             Window::setShouldClose(true);
         }
-        if (Events::jclicked(GLFW_MOUSE_BUTTON_1)) {
-            glClearColor(0.1f, 0, 0, 1);
-        }
+
         if (Events::jpressed(GLFW_KEY_TAB)) {
             Events::toggleCursor();
         }
@@ -100,261 +83,86 @@ int main(void) {
         if (Events::jpressed(GLFW_KEY_V)) {
             // Вращение верхней грани кубика
             for (int i = 0; i < 45; ++i) {
-                for (int x = 0; x < 3; ++x) {
-                    for (int z = 0; z < 3; ++z) {
-                        glm::vec3 center = glm::vec3(2.0f, 3.0f, 2.0f); // Берем позицию (x, y, z) центрального кубика
-                        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(2.0f),
-                                                         glm::vec3(0.0f, -1.0f, 0.0f));
-                        glm::mat4 translation = glm::translate(glm::mat4(1.0f),
-                                                               -center); // Перемещаем в противоположную сторону от центра
-                        glm::mat4 invTranslation = glm::translate(glm::mat4(1.0),
-                                                                  center); // Возвращаем кубики обратно после вращения
-                        cubes[x][2][z].model = invTranslation * rotation * translation * cubes[x][2][z].model;
-                    }
-                }
+                cube.rotate_horizontal(2);
 
-                for (int x = 0; x < 3; ++x)
-                    for (int z = 0; z < 3; ++z) {
-                        for (int y = 0; y < 3; ++y)
-                            cubes[x][y][z].draw(shader, cubes[x][y][z].model);
-                    }
-
+                cube.draw();
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3 / 2; j++) {
-                    std::swap(cubes[i][2][j], cubes[i][2][3 - j - 1]);
-                }
-            }
-            for (int i = 0; i < 3; i++) {
-                for (int j = i + 1; j < 3; j++) {
-                    std::swap(cubes[i][2][j], cubes[j][2][i]);
-                }
-            }
+            cube.swap_horizontal_matrix(2);
         }
 
 
         if (Events::jpressed(GLFW_KEY_B)) {
             // Вращение средней горизонтальной грани кубика
             for (int i = 0; i < 45; ++i) {
-                for (int x = 0; x < 3; ++x) {
-                    for (int z = 0; z < 3; ++z) {
-                        glm::vec3 center = glm::vec3(2.0f, 3.0f, 2.0f); // Берем позицию (x, y, z) центрального кубика
-                        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(2.0f),
-                                                         glm::vec3(0.0f, -1.0f, 0.0f));
-                        glm::mat4 translation = glm::translate(glm::mat4(1.0f),
-                                                               -center); // Перемещаем в противоположную сторону от центра
-                        glm::mat4 invTranslation = glm::translate(glm::mat4(1.0),
-                                                                  center); // Возвращаем кубики обратно после вращения
-                        cubes[x][1][z].model = invTranslation * rotation * translation * cubes[x][1][z].model;
-                    }
-                }
-
-                for (int x = 0; x < 3; ++x)
-                    for (int z = 0; z < 3; ++z) {
-                        for (int y = 0; y < 3; ++y)
-                            cubes[x][y][z].draw(shader, cubes[x][y][z].model);
-                    }
-
+                cube.rotate_horizontal(1);
+                cube.draw();
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3 / 2; j++) {
-                    std::swap(cubes[i][1][j], cubes[i][1][3 - j - 1]);
-                }
-            }
-            for (int i = 0; i < 3; i++) {
-                for (int j = i + 1; j < 3; j++) {
-                    std::swap(cubes[i][1][j], cubes[j][1][i]);
-                }
-            }
+            cube.swap_horizontal_matrix(1);
         }
 
         if (Events::jpressed(GLFW_KEY_N)) {
             // Вращение нижней грани кубика
             for (int i = 0; i < 45; ++i) {
-                for (int x = 0; x < 3; ++x) {
-                    for (int z = 0; z < 3; ++z) {
-                        glm::vec3 center = glm::vec3(2.0f, 3.0f, 2.0f); // Берем позицию (x, y, z) центрального кубика
-                        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(2.0f),
-                                                         glm::vec3(0.0f, -1.0f, 0.0f));
-                        glm::mat4 translation = glm::translate(glm::mat4(1.0f),
-                                                               -center); // Перемещаем в противоположную сторону от центра
-                        glm::mat4 invTranslation = glm::translate(glm::mat4(1.0),
-                                                                  center); // Возвращаем кубики обратно после вращения
-                        cubes[x][0][z].model = invTranslation * rotation * translation * cubes[x][0][z].model;
-                    }
-                }
-
-                for (int x = 0; x < 3; ++x)
-                    for (int z = 0; z < 3; ++z) {
-                        for (int y = 0; y < 3; ++y)
-                            cubes[x][y][z].draw(shader, cubes[x][y][z].model);
-                    }
-
+                cube.rotate_horizontal(0);
+                cube.draw();
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
-            for (int i = 0; i < 3; i++) {
-                for (int j = 0; j < 3 / 2; j++) {
-                    std::swap(cubes[i][0][j], cubes[i][0][3 - j - 1]);
-                }
-            }
-            for (int i = 0; i < 3; i++) {
-                for (int j = i + 1; j < 3; j++) {
-                    std::swap(cubes[i][0][j], cubes[j][0][i]);
-                }
-            }
+            cube.swap_horizontal_matrix(0);
         }
 
 
         if (Events::jpressed(GLFW_KEY_G)) {
             // Вращение правой грани кубика
             for (int i = 0; i < 45; ++i) {
-                for (int y = 0; y < 3; ++y) {
-                    for (int z = 0; z < 3; ++z) {
-                        glm::vec3 center = glm::vec3(1.0f, 2.0f, 2.0f); // Берем позицию (x, y, z) центрального кубика
-                        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(2.0f),
-                                                         glm::vec3(1.0f, 0.0f, 0.0f));
-                        glm::mat4 translation = glm::translate(glm::mat4(1.0f),
-                                                               -center); // Перемещаем в противоположную сторону от центра
-                        glm::mat4 invTranslation = glm::translate(glm::mat4(1.0f),
-                                                                  center); // Возвращаем кубики обратно после вращения
-                        cubes[0][y][z].model = invTranslation * rotation * translation * cubes[0][y][z].model;
-                    }
-                }
-                for (int x = 0; x < 3; ++x)
-                    for (int z = 0; z < 3; ++z) {
-                        for (int y = 0; y < 3; ++y)
-                            cubes[x][y][z].draw(shader, cubes[x][y][z].model);
-
-                    }
-
+                cube.rotate_vertical(0);
+                cube.draw();
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
-            int n = 3;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n / 2; j++) {
-                    std::swap(cubes[0][i][j], cubes[0][i][n - j - 1]);
-                }
-            }
-            for (int i = 0; i < n; i++) {
-                for (int j = i + 1; j < n; j++) {
-                    std::swap(cubes[0][i][j], cubes[0][j][i]);
-                }
-            }
+            cube.swap_vertical_matrix(0);
         }
         if (Events::jpressed(GLFW_KEY_J)) {
             // Вращение левой грани кубика
             for (int i = 0; i < 45; ++i) {
-                for (int y = 0; y < 3; ++y) {
-                    for (int z = 0; z < 3; ++z) {
-                        glm::vec3 center = glm::vec3(2.0f, 2.0f, 2.0f); // Берем позицию (x, y, z) центрального кубика
-                        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(2.0f),
-                                                         glm::vec3(1.0f, 0.0f, 0.0f));
-                        glm::mat4 translation = glm::translate(glm::mat4(1.0f),
-                                                               -center); // Перемещаем в противоположную сторону от центра
-                        glm::mat4 invTranslation = glm::translate(glm::mat4(1.0f),
-                                                                  center); // Возвращаем кубики обратно после вращения
-                        cubes[2][y][z].model = invTranslation * rotation * translation * cubes[2][y][z].model;
-                    }
-                }
-                for (int x = 0; x < 3; ++x)
-                    for (int z = 0; z < 3; ++z) {
-                        for (int y = 0; y < 3; ++y)
-                            cubes[x][y][z].draw(shader, cubes[x][y][z].model);
-
-                    }
+                cube.rotate_vertical(2);
+                cube.draw();
 
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
-            int n = 3;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n / 2; j++) {
-                    std::swap(cubes[2][i][j], cubes[2][i][n - j - 1]);
-                }
-            }
-            for (int i = 0; i < n; i++) {
-                for (int j = i + 1; j < n; j++) {
-                    std::swap(cubes[2][i][j], cubes[2][j][i]);
-                }
-            }
+            cube.swap_vertical_matrix(2);
         }
 
         if (Events::jpressed(GLFW_KEY_H)) {
             // Вращение средней вертикальной грани кубика
             for (int i = 0; i < 45; ++i) {
-                for (int y = 0; y < 3; ++y) {
-                    for (int z = 0; z < 3; ++z) {
-                        glm::vec3 center = glm::vec3(2.0f, 2.0f, 2.0f); // Берем позицию (x, y, z) центрального кубика
-                        glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(2.0f),
-                                                         glm::vec3(1.0f, 0.0f, 0.0f));
-                        glm::mat4 translation = glm::translate(glm::mat4(1.0f),
-                                                               -center); // Перемещаем в противоположную сторону от центра
-                        glm::mat4 invTranslation = glm::translate(glm::mat4(1.0f),
-                                                                  center); // Возвращаем кубики обратно после вращения
-                        cubes[1][y][z].model = invTranslation * rotation * translation * cubes[1][y][z].model;
-                    }
-                }
-                for (int x = 0; x < 3; ++x)
-                    for (int z = 0; z < 3; ++z) {
-                        for (int y = 0; y < 3; ++y)
-                            cubes[x][y][z].draw(shader, cubes[x][y][z].model);
-
-                    }
+                cube.rotate_vertical(1);
+                cube.draw();
 
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
-            int n = 3;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n / 2; j++) {
-                    std::swap(cubes[1][i][j], cubes[1][i][n - j - 1]);
-                }
-            }
-            for (int i = 0; i < n; i++) {
-                for (int j = i + 1; j < n; j++) {
-                    std::swap(cubes[1][i][j], cubes[1][j][i]);
-                }
-            }
+            cube.swap_vertical_matrix(1);
         }
 
 
-
         camX += -Events::dX / Window::height;
-
         camY += -Events::dY / Window::height;
+
         camera->rotation = glm::mat4(1.0f);
         camera->rotate(camY, camX, 0);
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
         shader->use();
         shader->uniformMatrix("projview", camera->getProjection() * camera->getView());
 
-        glEnableVertexAttribArray(1);
-        glVertexAttribPointer(
-                1,                                // attribute. No particular reason for 1, but must match the layout in the shader.
-                3,                                // size
-                GL_FLOAT,                         // type
-                GL_FALSE,                         // normalized?
-                0,                                // stride
-                (void *) 0                          // array buffer offset
-        );
-
-
-        for (int x = 0; x < 3; ++x) {
-            for (int y = 0; y < 3; ++y) {
-                for (int z = 0; z < 3; ++z) {
-                    cubes[x][y][z].draw(shader, cubes[x][y][z].model);
-                }
-            }
-        }
+        cube.draw();
         glBindVertexArray(0);
 
         Window::swapBuffers();

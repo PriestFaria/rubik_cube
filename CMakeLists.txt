@@ -20,7 +20,10 @@ add_executable(opengl_tutorial src/main.cpp
         src/graphics/Shader.cpp
         src/Camera/Camera.h
         src/Camera/Camera.cpp
-        src/Cube/Cube.cpp)
+        src/Cube/Cube.cpp
+        src/RubikCube/RubikCube.h
+        src/RubikCube/RubikCube.h
+        src/RubikCube/RubikCube.cpp)
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
