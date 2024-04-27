@@ -19,9 +19,6 @@ int Window::height = HEIGHT;
 
 
 int main(void) {
-    // file
-
-
 
     Window::initialize(WIDTH, HEIGHT, "Window 2");
     Events::initialize();
@@ -38,14 +35,13 @@ int main(void) {
     RubikCube cube(shader);
     cube.make_grid();
 
-    std::ofstream out;
-//    out.open("example.txt");
+//    std::ofstream out;
+////    out.open("example.txt");
 
-    cube.load_from_file("example.txt");
+//    cube.load_from_file("example.txt");
     glClearColor(0.6f, 0.62f, 0.65f, 1);
 
-    Camera *camera = new Camera(glm::vec3(0.0f, 3.0f, 5.0f), glm::radians(70.0f));
-
+    Camera *camera = new Camera(glm::vec3(7.0f, 7.0f, 15.0f), glm::radians(90.0f));
 
     glm::mat4 model(1.0f);
 
@@ -99,14 +95,12 @@ int main(void) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
             cube.swap_horizontal_matrix(2);
-            if (out.is_open())
-                out << "1" << std::endl;
+            cube.st.push_back('1');
         }
 
 
         if (Events::jpressed(GLFW_KEY_B)) {
             // Вращение передней грани кубика
-
 
             for (int i = 0; i < 45; ++i) {
                 cube.rotate_front(2.0f);
@@ -115,8 +109,7 @@ int main(void) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
             cube.swap_vertical_matrix_front();
-            if (out.is_open())
-                out << "2" << std::endl;
+            cube.st.push_back('2');
         }
 
         if (Events::jpressed(GLFW_KEY_N)) {
@@ -128,8 +121,7 @@ int main(void) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
             cube.swap_horizontal_matrix(0);
-            if (out.is_open())
-                out << "3" << std::endl;
+            cube.st.push_back('3');
         }
 
 
@@ -142,8 +134,7 @@ int main(void) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
             cube.swap_vertical_matrix(0);
-            if (out.is_open())
-                out << "6" << std::endl;
+            cube.st.push_back('6');
         }
         if (Events::jpressed(GLFW_KEY_J)) {
             // Вращение левой грани кубика
@@ -155,8 +146,7 @@ int main(void) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
             cube.swap_vertical_matrix(2);
-            if (out.is_open())
-                out << "4" << std::endl;
+            cube.st.push_back('6');
         }
 
         if (Events::jpressed(GLFW_KEY_H)) {
@@ -171,14 +161,24 @@ int main(void) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
             cube.swap_vertical_matrix_back();
-            if (out.is_open())
-                out << "5" << std::endl;
+            cube.st.push_back('5');
+
         }
-        if (Events::jpressed(GLFW_KEY_P)){
+        if (Events::jpressed(GLFW_KEY_P)) {
             cube.solve(9.0f);
         }
-
-
+        if(Events::jpressed(GLFW_KEY_Y)){
+            std::string filename;
+            std::cout << "Input write file name: ";
+            std::cin >> filename;
+            cube.write_state(filename.c_str());
+        }
+        if (Events::jpressed(GLFW_KEY_U)){
+            std::string filename;
+            std::cout << "Input load file name: ";
+            std::cin >> filename;
+            cube.load_from_file(filename.c_str());
+        }
         camX += -Events::dX / Window::height;
         camY += -Events::dY / Window::height;
 
@@ -195,7 +195,7 @@ int main(void) {
 
         Window::swapBuffers();
     }
-    out.close();
+//    out.close();
     return 0;
 }
 

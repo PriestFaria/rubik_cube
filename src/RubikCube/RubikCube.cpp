@@ -4,6 +4,7 @@
 
 #include "RubikCube.h"
 #include <fstream>
+#include <iostream>
 #include "../Window/Window.h"
 
 RubikCube::RubikCube(Shader *shader) : shader(shader) {
@@ -170,11 +171,18 @@ void RubikCube::swap_vertical_matrix(int layer) {
 }
 
 
-void RubikCube::load_from_file(const char *filename) {
-    std::string line;
+int RubikCube::load_from_file(const char *filename) {
 
+    std::string line;
     std::ifstream in(filename);
+    if(!in.is_open()) {
+        std::cerr << "Failed to open file" << std::endl;
+        in.close();
+        return 1;
+    }
     if (in.is_open()) {
+        solve(90.0f);
+        st.erase(st.begin(), st.end());
         while (std::getline(in, line)) {
             if (line[0] == '1') {
                 //верх
@@ -214,8 +222,10 @@ void RubikCube::load_from_file(const char *filename) {
             }
 
         }
+        in.close();
     }
-    in.close();
+    std::cout << "Loaded state from file: " << filename << std::endl;
+    return 0;
 }
 void RubikCube::solve(float angle) {
     std::vector<char> reversedSt(st.rbegin(), st.rend());
@@ -294,4 +304,15 @@ void RubikCube::solve(float angle) {
             }
         }
     }
+    st.erase(st.begin(), st.end());
+}
+
+void RubikCube::write_state(const char* fileName) {
+    std::ofstream in;
+    in.open(fileName);
+
+    for(auto k : st){
+        in << k << std::endl;
+    }
+    std::cout << "Written state to file: " << fileName << std::endl;
 }

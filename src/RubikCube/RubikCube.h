@@ -38,13 +38,16 @@ public:
 
     void swap_vertical_matrix(int layer);
 
-    void load_from_file(const char* filename);
+    int load_from_file(const char* filename);
 
     void solve(float angle);
 
     void swap_vertical_matrix_front();
 
     void swap_vertical_matrix_back();
+
+    void write_state(const char* fileName);
+
 };
 
 
