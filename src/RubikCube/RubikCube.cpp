@@ -15,7 +15,6 @@ RubikCube::RubikCube(Shader *shader) : shader(shader) {
 }
 
 
-
 void RubikCube::rotate_front(float angle) {
 
     for (int x = 0; x < 3; ++x) {
@@ -34,9 +33,11 @@ void RubikCube::rotate_front(float angle) {
 }
 
 void RubikCube::swap_vertical_matrix_front() {
+    glm::mat4 rotationM = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+
     // Теперь нужно выполнить транспонирование матрицы, чтобы переставить элементы правильно
     for (int i = 0; i < 3; ++i) {
-        for (int j = i+1; j < 3; ++j) {
+        for (int j = i + 1; j < 3; ++j) {
             std::swap(cubes[i][j][0], cubes[j][i][0]);
         }
     }
@@ -46,9 +47,53 @@ void RubikCube::swap_vertical_matrix_front() {
             std::swap(cubes[i][j][0], cubes[i][3 - j - 1][0]);
         }
     }
+    for (int x = 0; x < 3; ++x) {
+        for (int z = 0; z < 3; ++z) {
+            glm::vec4 white_n_homogeneous = glm::vec4(cubes[x][z][0].white_n, 0.0f);
+            glm::vec3 transformed_white_n = glm::vec3(rotationM * white_n_homogeneous);
+            if (abs(transformed_white_n.x) < 1)
+                transformed_white_n.x = 0.0f;
+            if (abs(transformed_white_n.y) < 1)
+                transformed_white_n.y = 0.0f;
+            if (abs(transformed_white_n.z) < 1)
+                transformed_white_n.z = 0.0f;
 
+
+            if (transformed_white_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[x][z][0].white_n = transformed_white_n; // Обновляем вектор после вращения
+
+
+
+            glm::vec4 blue_n_homogeneous = glm::vec4(cubes[x][z][0].blue_n, 0.0f);
+            glm::vec3 transformed_blue_n = glm::vec3(rotationM * blue_n_homogeneous);
+            if (abs(transformed_blue_n.x) < 1)
+                transformed_blue_n.x = 0.0f;
+            if (abs(transformed_blue_n.y) < 1)
+                transformed_blue_n.y = 0.0f;
+            if (abs(transformed_blue_n.z) < 1)
+                transformed_blue_n.z = 0.0f;
+
+
+            if (transformed_blue_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[x][z][0].blue_n = transformed_blue_n; // Обновляем вектор после вращения
+
+
+            glm::vec4 red_n_homogeneous = glm::vec4(cubes[x][z][0].red_n, 0.0f);
+            glm::vec3 transformed_red_n = glm::vec3(rotationM * red_n_homogeneous);
+            if (abs(transformed_red_n.x) < 1)
+                transformed_red_n.x = 0.0f;
+            if (abs(transformed_red_n.y) < 1)
+                transformed_red_n.y = 0.0f;
+            if (abs(transformed_red_n.z) < 1)
+                transformed_red_n.z = 0.0f;
+
+
+            if (transformed_red_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[x][z][0].red_n = transformed_red_n; // Обновляем вектор после вращения
+
+        }
+    }
 }
-
 
 
 void RubikCube::rotate_back(float angle) {
@@ -70,6 +115,7 @@ void RubikCube::rotate_back(float angle) {
 
 
 void RubikCube::swap_vertical_matrix_back() {
+    glm::mat4 rotationM = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, 0.0f, -1.0f));
 
     for (int i = 0; i < 3; i++) {
         for (int j = i + 1; j < 3; j++) {
@@ -82,10 +128,52 @@ void RubikCube::swap_vertical_matrix_back() {
             std::swap(cubes[i][j][2], cubes[i][3 - j - 1][2]);
         }
     }
+    for (int x = 0; x < 3; ++x) {
+        for (int z = 0; z < 3; ++z) {
+            glm::vec4 white_n_homogeneous = glm::vec4(cubes[x][z][2].white_n, 0.0f);
+            glm::vec3 transformed_white_n = glm::vec3(rotationM * white_n_homogeneous);
+            if (abs(transformed_white_n.x) < 1)
+                transformed_white_n.x = 0.0f;
+            if (abs(transformed_white_n.y) < 1)
+                transformed_white_n.y = 0.0f;
+            if (abs(transformed_white_n.z) < 1)
+                transformed_white_n.z = 0.0f;
 
+
+            if (transformed_white_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[x][z][2].white_n = transformed_white_n; // Обновляем вектор после вращения
+
+
+
+            glm::vec4 blue_n_homogeneous = glm::vec4(cubes[x][z][2].blue_n, 0.0f);
+            glm::vec3 transformed_blue_n = glm::vec3(rotationM * blue_n_homogeneous);
+            if (abs(transformed_blue_n.x) < 1)
+                transformed_blue_n.x = 0.0f;
+            if (abs(transformed_blue_n.y) < 1)
+                transformed_blue_n.y = 0.0f;
+            if (abs(transformed_blue_n.z) < 1)
+                transformed_blue_n.z = 0.0f;
+
+
+            if (transformed_blue_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[x][z][2].blue_n = transformed_blue_n; // Обновляем вектор после вращения
+
+
+            glm::vec4 red_n_homogeneous = glm::vec4(cubes[x][z][2].red_n, 0.0f);
+            glm::vec3 transformed_red_n = glm::vec3(rotationM * red_n_homogeneous);
+            if (abs(transformed_red_n.x) < 1)
+                transformed_red_n.x = 0.0f;
+            if (abs(transformed_red_n.y) < 1)
+                transformed_red_n.y = 0.0f;
+            if (abs(transformed_red_n.z) < 1)
+                transformed_red_n.z = 0.0f;
+
+
+            if (transformed_red_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[x][z][2].red_n = transformed_red_n; // Обновляем вектор после вращения
+        }
+    }
 }
-
-
 
 
 void RubikCube::draw() {
@@ -124,12 +212,17 @@ void RubikCube::rotate_horizontal(int layer, float angle) {
                                                    -center); // Перемещаем в противоположную сторону от центра
             glm::mat4 invTranslation = glm::translate(glm::mat4(1.0),
                                                       center); // Возвращаем кубики обратно после вращения
+            glm::mat3 rotationM = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f),
+                                              glm::vec3(0.0f, -1.0f, 0.0f));
             cubes[x][layer][z].model = invTranslation * rotation * translation * cubes[x][layer][z].model;
         }
     }
 }
 
 void RubikCube::swap_horizontal_matrix(int layer) {
+    glm::mat4 rotationM = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(0.0f, -1.0f, 0.0f));
+
+
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3 / 2; j++) {
             std::swap(cubes[i][layer][j], cubes[i][layer][3 - j - 1]);
@@ -138,6 +231,54 @@ void RubikCube::swap_horizontal_matrix(int layer) {
     for (int i = 0; i < 3; i++) {
         for (int j = i + 1; j < 3; j++) {
             std::swap(cubes[i][layer][j], cubes[j][layer][i]);
+        }
+    }
+
+    for (int x = 0; x < 3; ++x) {
+        for (int z = 0; z < 3; ++z) {
+            glm::vec4 blue_n_homogeneous = glm::vec4(cubes[x][layer][z].blue_n, 0.0f);
+            glm::vec3 transformed_blue_n = glm::vec3(rotationM * blue_n_homogeneous);
+
+            if (abs(transformed_blue_n.x) < 1)
+                transformed_blue_n.x = 0.0f;
+            if (abs(transformed_blue_n.y) < 1)
+                transformed_blue_n.y = 0.0f;
+            if (abs(transformed_blue_n.z) < 1)
+                transformed_blue_n.z = 0.0f;
+
+            if (transformed_blue_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[x][layer][z].blue_n = transformed_blue_n; // Обновляем вектор после вращения
+
+
+            glm::vec4 white_n_homogeneous = glm::vec4(cubes[x][layer][z].white_n, 0.0f);
+            glm::vec3 transformed_white_n = glm::vec3(rotationM * white_n_homogeneous);
+            if (abs(transformed_white_n.x) < 1)
+                transformed_white_n.x = 0.0f;
+            if (abs(transformed_white_n.y) < 1)
+                transformed_white_n.y = 0.0f;
+            if (abs(transformed_white_n.z) < 1)
+                transformed_white_n.z = 0.0f;
+
+            if (transformed_white_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[x][layer][z].white_n = transformed_white_n; // Обновляем вектор после вращения
+
+
+
+            glm::vec4 red_n_homogeneous = glm::vec4(cubes[x][layer][z].red_n, 0.0f);
+            glm::vec3 transformed_red_n = glm::vec3(rotationM * red_n_homogeneous);
+            if (abs(transformed_red_n.x) < 1)
+                transformed_red_n.x = 0.0f;
+            if (abs(transformed_red_n.y) < 1)
+                transformed_red_n.y = 0.0f;
+            if (abs(transformed_red_n.z) < 1)
+                transformed_red_n.z = 0.0f;
+
+            if (transformed_red_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[x][layer][z].red_n = transformed_red_n; // Обновляем вектор после вращения
+
+
+
+
         }
     }
 }
@@ -153,11 +294,16 @@ void RubikCube::rotate_vertical(int layer, float angle) {
             glm::mat4 invTranslation = glm::translate(glm::mat4(1.0f),
                                                       center); // Возвращаем кубики обратно после вращения
             cubes[layer][y][z].model = invTranslation * rotation * translation * cubes[layer][y][z].model;
+
         }
     }
 }
 
 void RubikCube::swap_vertical_matrix(int layer) {
+    glm::mat4 rotationM = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+
+
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3 / 2; j++) {
             std::swap(cubes[layer][i][j], cubes[layer][i][3 - j - 1]);
@@ -168,6 +314,47 @@ void RubikCube::swap_vertical_matrix(int layer) {
             std::swap(cubes[layer][i][j], cubes[layer][j][i]);
         }
     }
+    for (int x = 0; x < 3; ++x) {
+        for (int z = 0; z < 3; ++z) {
+            glm::vec4 white_n_homogeneous = glm::vec4(cubes[layer][x][z].white_n, 0.0f);
+            glm::vec3 transformed_white_n = glm::vec3(rotationM * white_n_homogeneous);
+            if (abs(transformed_white_n.x) < 1)
+                transformed_white_n.x = 0.0f;
+            if (abs(transformed_white_n.y) < 1)
+                transformed_white_n.y = 0.0f;
+            if (abs(transformed_white_n.z) < 1)
+                transformed_white_n.z = 0.0f;
+
+
+            if (transformed_white_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[layer][x][z].white_n = transformed_white_n; // Обновляем вектор после вращения
+
+
+
+            glm::vec4 blue_n_homogeneous = glm::vec4(cubes[layer][x][z].blue_n, 0.0f);
+            glm::vec3 transformed_blue_n = glm::vec3(rotationM * blue_n_homogeneous);
+            if (abs(transformed_blue_n.x) < 1)
+                transformed_blue_n.x = 0.0f;
+            if (abs(transformed_blue_n.y) < 1)
+                transformed_blue_n.y = 0.0f;
+            if (abs(transformed_blue_n.z) < 1)
+                transformed_blue_n.z = 0.0f;
+
+
+            if (transformed_blue_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[layer][x][z].blue_n = transformed_blue_n; // Обновляем вектор после вращения
+
+
+
+
+//            std::cout << "WHITE( " << cubes[layer][x][z].white_n.x << ", " << cubes[layer][x][z].white_n.y << ", "
+//                      << cubes[layer][x][z].white_n.z << " )" << std::endl;
+//            std::cout << "BLUE( " << cubes[layer][x][z].blue_n.x << ", " << cubes[layer][x][z].blue_n.y << ", "
+//                      << cubes[layer][x][z].blue_n.z << " )" << std::endl;
+        }
+    }
+//    std::cout << "============================" << std::endl;
+
 }
 
 
@@ -175,7 +362,7 @@ int RubikCube::load_from_file(const char *filename) {
 
     std::string line;
     std::ifstream in(filename);
-    if(!in.is_open()) {
+    if (!in.is_open()) {
         std::cerr << "Failed to open file" << std::endl;
         in.close();
         return 1;
@@ -227,6 +414,7 @@ int RubikCube::load_from_file(const char *filename) {
     std::cout << "Loaded state from file: " << filename << std::endl;
     return 0;
 }
+
 void RubikCube::solve(float angle) {
     std::vector<char> reversedSt(st.rbegin(), st.rend());
     for (auto k: reversedSt) {
@@ -307,11 +495,11 @@ void RubikCube::solve(float angle) {
     st.erase(st.begin(), st.end());
 }
 
-void RubikCube::write_state(const char* fileName) {
+void RubikCube::write_state(const char *fileName) {
     std::ofstream in;
     in.open(fileName);
 
-    for(auto k : st){
+    for (auto k: st) {
         in << k << std::endl;
     }
     std::cout << "Written state to file: " << fileName << std::endl;

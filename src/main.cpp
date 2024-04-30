@@ -146,7 +146,7 @@ int main(void) {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             }
             cube.swap_vertical_matrix(2);
-            cube.st.push_back('6');
+            cube.st.push_back('4');
         }
 
         if (Events::jpressed(GLFW_KEY_H)) {

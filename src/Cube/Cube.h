@@ -12,7 +12,12 @@
 class Cube {
 public:
     Cube();
-
+    glm::vec3 white_n;
+    glm::vec3 blue_n;
+    glm::vec3 red_n;
+    glm::vec3 yellow_n();
+    glm::vec3 orange_n();
+    glm::vec3 green_n();
     void draw(Shader *shader, glm::mat4 model);
     glm::mat4 model;
     GLuint VAO, VBO, colorbuffer;
