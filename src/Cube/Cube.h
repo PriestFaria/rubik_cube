@@ -11,6 +11,8 @@
 
 class Cube {
 public:
+    int x, y ,z;
+    int id;
     Cube();
     glm::vec3 white_n;
     glm::vec3 blue_n;

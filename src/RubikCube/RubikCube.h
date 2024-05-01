@@ -48,6 +48,22 @@ public:
 
     void write_state(const char* fileName);
 
+    void pifPaf(int up, int right);
+
+    void y_swap_cube();
+    void y_backwards_swap_cube();
+
+    void x_swap_cube();
+
+    int white_center_id;
+    int blue_center_id;
+    int red_center_id;
+    int green_center_id;
+    int yellow_center_id;
+    int orange_center_id;
+
+    glm::vec3 find_cube_coords(int id);
+
 };
 
 

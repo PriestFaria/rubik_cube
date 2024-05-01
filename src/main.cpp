@@ -149,6 +149,8 @@ int main(void) {
             cube.st.push_back('4');
         }
 
+
+
         if (Events::jpressed(GLFW_KEY_H)) {
             // Вращение задней  грани кубика
 
@@ -167,6 +169,21 @@ int main(void) {
         if (Events::jpressed(GLFW_KEY_P)) {
             cube.solve(9.0f);
         }
+        if (Events::jpressed(GLFW_KEY_T)) {
+            cube.y_swap_cube();
+        }
+        if (Events::jpressed(GLFW_KEY_R)) {
+            cube.y_backwards_swap_cube();
+        }
+        if (Events::jpressed(GLFW_KEY_K)) {
+            cube.x_swap_cube();
+        }
+
+        if (Events::jpressed(GLFW_KEY_1)){
+            glm::vec3 coords = cube.find_cube_coords(cube.red_center_id);
+            std::cout << "( " << coords.x << ", " << coords.y << ", " << coords.z << " )";
+        }
+
         if(Events::jpressed(GLFW_KEY_Y)){
             std::string filename;
             std::cout << "Input write file name: ";

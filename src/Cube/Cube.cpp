@@ -149,3 +149,5 @@ glm::vec3 Cube::green_n() {
 glm::vec3 Cube::yellow_n() {
     return -white_n;
 }
+
+

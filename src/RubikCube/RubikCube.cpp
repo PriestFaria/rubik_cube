@@ -8,8 +8,25 @@
 #include "../Window/Window.h"
 
 RubikCube::RubikCube(Shader *shader) : shader(shader) {
-    cubes = std::vector<std::vector<std::vector<Cube> > >(3, std::vector<std::vector<Cube> >(3, std::vector<Cube>(3,
-                                                                                                                  Cube())));
+    green_center_id = 5;
+    orange_center_id = 11;
+    blue_center_id = 23;
+    yellow_center_id=15;
+    red_center_id = 17;
+    white_center_id = 13;
+    cubes = std::vector<std::vector<std::vector<Cube> > >(3, std::vector<std::vector<Cube> >(3, std::vector<Cube>(3,Cube())));
+    int id = 0;
+    for (int x = 0; x < 3; ++x) {
+        for (int y = 0; y < 3; ++y) {
+            for (int z = 0; z < 3; ++z) {
+                ++id;
+                cubes[x][y][z].x = x;
+                cubes[x][y][z].y = y;
+                cubes[x][y][z].z = z;
+                cubes[x][y][z].id = id;
+            }
+        }
+    }
     make_grid();
     st = std::vector<char>();
 }
@@ -303,7 +320,6 @@ void RubikCube::swap_vertical_matrix(int layer) {
     glm::mat4 rotationM = glm::rotate(glm::mat4(1.0f), glm::radians(90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 
 
-
     for (int i = 0; i < 3; i++) {
         for (int j = 0; j < 3 / 2; j++) {
             std::swap(cubes[layer][i][j], cubes[layer][i][3 - j - 1]);
@@ -480,7 +496,6 @@ void RubikCube::solve(float angle) {
             }
         }
         if (k == '6') {
-            //право
             for (int j = 0; j < 3; ++j) {
                 for (int i = 0; i < 90 / angle; ++i) {
                     rotate_vertical(0, angle);
@@ -504,3 +519,71 @@ void RubikCube::write_state(const char *fileName) {
     }
     std::cout << "Written state to file: " << fileName << std::endl;
 }
+
+
+void RubikCube::y_swap_cube() {
+    for (int i = 0; i < 15; ++i) {
+        rotate_horizontal(0, 6);
+        rotate_horizontal(2, 6);
+        rotate_horizontal(1, 6);
+
+        draw();
+        Window::swapBuffers();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    swap_horizontal_matrix(0);
+
+
+    swap_horizontal_matrix(2);
+
+    swap_horizontal_matrix(1);
+}
+
+
+
+void RubikCube::y_backwards_swap_cube() {
+    for (int i = 0; i < 3; ++i) {
+        y_swap_cube();
+    }
+};
+
+void RubikCube::x_swap_cube() {
+    for (int i = 0; i < 15; ++i) {
+        rotate_vertical(2, 6.0f);
+        rotate_vertical(1, 6.0f);
+        rotate_vertical(0, 6.0f);
+
+        draw();
+
+        Window::swapBuffers();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    swap_vertical_matrix(2);
+
+
+    swap_vertical_matrix(1);
+
+    swap_vertical_matrix(0);
+}
+
+glm::vec3 RubikCube::find_cube_coords(int id){
+    for(int x = 0; x < 3; ++x){
+        for(int y = 0; y < 3; ++y){
+            for(int z = 0; z < 3; ++z){
+                if(cubes[x][y][z].id == id)
+                    return glm::vec3(x,y,z);
+            }
+        }
+    }
+}
+
+//крч перемещение куба в руках для Пиф Пафа можно реализовать с помощью общего поворота всех граней куба вокруг своих осей.
+
+//горизонтальные
+//1 - верхняя
+//2 - передняя
+//3 - нижняя
+//вертикальные
+//4 - левая
+//5 - задняя
+//6 - правая
