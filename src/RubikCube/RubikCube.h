@@ -110,7 +110,7 @@ public:
     //solve algorithms
     void white_to_up();
 
-    void make_white_cross();
+    int make_white_cross();
 
     void first_layer();
 
@@ -124,6 +124,7 @@ public:
 
     void make_corners();
 
+    void make_perfect_cross();
 };
 
 

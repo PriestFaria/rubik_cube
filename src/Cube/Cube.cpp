@@ -2,8 +2,12 @@
 #include <GL/glew.h>
 #include "../graphics/Shader.h"
 #include "Cube.h"
-
+#include <iostream>
 Cube::Cube() {
+    up_vec = glm::vec3(0, 1, 0);
+    front_vec = glm::vec3(0, 0, 1);
+    right_vec = glm::vec3(1, 0, 0);
+
     white_n = glm::vec3(0.0f, 0.0f, -1.0f);
     blue_n = glm::vec3(1.0f, 0.0f, 0.0f);
     red_n = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -151,3 +155,27 @@ glm::vec3 Cube::yellow_n() {
 }
 
 
+int Cube::get_color_by_n(glm::vec3 n){
+    if(white_n == n)
+        return 0;
+    if(blue_n == n)
+        return 1;
+    if(red_n == n)
+        return 2;
+    if(yellow_n() == n)
+        return 3;
+    if(orange_n() == n)
+        return 4;
+    if(green_n() == n)
+        return 5;
+    else{
+        std::cout << "WHITE: X: "<< white_n.x << " Y: " << white_n.y << " Z: " << white_n.z << std::endl;
+        std::cout << "BLUE: X: "<< blue_n.x << " Y: " << blue_n.y << " Z: " << blue_n.z << std::endl;
+        std::cout << "RED: X: "<< red_n.x << " Y: " << red_n.y << " Z: " << red_n.z << std::endl;
+        std::cout << "YELLOW: X: "<< yellow_n().x << " Y: " << yellow_n().y << " Z: " << yellow_n().z << std::endl;
+        std::cout << "GREEN: X: "<< green_n().x << " Y: " << green_n().y << " Z: " << green_n().z << std::endl;
+        std::cout << "ORANGE: X: "<< orange_n().x << " Y: " << orange_n().y << " Z: " << orange_n().z << std::endl;
+
+        std::cout << "N:  X: "<< n.x << "Y: " << n.y << "Z: " << n.z << std::endl;
+    }
+};

@@ -6,6 +6,7 @@
 #include <fstream>
 #include <iostream>
 #include "../Window/Window.h"
+#include <random>
 
 RubikCube::RubikCube(Shader *shader) : shader(shader) {
     right_center_coords = glm::vec3(2, 1, 1);
@@ -303,9 +304,6 @@ void RubikCube::swap_horizontal_matrix(int layer) {
             if (transformed_red_n != glm::vec3(0.0f, 0.0f, 0.0f))
                 cubes[x][layer][z].red_n = transformed_red_n; // Обновляем вектор после вращения
 
-
-
-
         }
     }
 }
@@ -371,15 +369,27 @@ void RubikCube::swap_vertical_matrix(int layer) {
                 cubes[layer][x][z].blue_n = transformed_blue_n; // Обновляем вектор после вращения
 
 
+            glm::vec4 red_n_homogeneous = glm::vec4(cubes[layer][x][z].red_n, 0.0f);
+            glm::vec3 transformed_red_n = glm::vec3(rotationM * red_n_homogeneous);
+            if (abs(transformed_red_n.x) < 1)
+                transformed_red_n.x = 0.0f;
+            if (abs(transformed_red_n.y) < 1)
+                transformed_red_n.y = 0.0f;
+            if (abs(transformed_red_n.z) < 1)
+                transformed_red_n.z = 0.0f;
 
 
-//            std::cout << "WHITE( " << cubes[layer][x][z].white_n.x << ", " << cubes[layer][x][z].white_n.y << ", "
-//                      << cubes[layer][x][z].white_n.z << " )" << std::endl;
-//            std::cout << "BLUE( " << cubes[layer][x][z].blue_n.x << ", " << cubes[layer][x][z].blue_n.y << ", "
-//                      << cubes[layer][x][z].blue_n.z << " )" << std::endl;
+            if (transformed_red_n != glm::vec3(0.0f, 0.0f, 0.0f))
+                cubes[layer][x][z].red_n = transformed_red_n; // Обновляем вектор после вращения
+
+
+            std::cout << "WHITE( " << cubes[layer][x][z].white_n.x << ", " << cubes[layer][x][z].white_n.y << ", "
+                      << cubes[layer][x][z].white_n.z << " )" << std::endl;
+            std::cout << "BLUE( " << cubes[layer][x][z].blue_n.x << ", " << cubes[layer][x][z].blue_n.y << ", "
+                      << cubes[layer][x][z].blue_n.z << " )" << std::endl;
         }
     }
-//    std::cout << "============================" << std::endl;
+    std::cout << "============================" << std::endl;
 
 }
 
@@ -443,7 +453,8 @@ int RubikCube::load_from_file(const char *filename) {
 
 void RubikCube::solve(float angle) {
     white_to_up();
-    make_white_cross();
+    while (make_white_cross());
+    make_perfect_cross();
 //    first_layer();
 //    second_layer();
 //    yellow_cross();
@@ -529,8 +540,8 @@ void RubikCube::white_to_up() {
 }
 
 void RubikCube::R() {
-    for (int i = 0; i < 45; ++i) {
-        rotate_vertical(2, 2.0f);
+    for (int i = 0; i < 15; ++i) {
+        rotate_vertical(2, 6.0f);
         draw();
 
         Window::swapBuffers();
@@ -551,8 +562,8 @@ void RubikCube::R_back() {
 }
 
 void RubikCube::L() {
-    for (int i = 0; i < 45; ++i) {
-        rotate_vertical(0, 2.0f);
+    for (int i = 0; i < 15; ++i) {
+        rotate_vertical(0, 6.0f);
         draw();
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -572,8 +583,8 @@ void RubikCube::L_back() {
 }
 
 void RubikCube::U() {
-    for (int i = 0; i < 45; ++i) {
-        rotate_horizontal(2, 2.0f);
+    for (int i = 0; i < 15; ++i) {
+        rotate_horizontal(2, 6.0f);
 
         draw();
         Window::swapBuffers();
@@ -594,8 +605,8 @@ void RubikCube::U_back() {
 }
 
 void RubikCube::F() {
-    for (int i = 0; i < 45; ++i) {
-        rotate_back(2.0f);
+    for (int i = 0; i < 15; ++i) {
+        rotate_back(6.0f);
         draw();
 
         Window::swapBuffers();
@@ -639,7 +650,7 @@ void RubikCube::y_back() {
     y_backwards_swap_cube();
 }
 
-void RubikCube::make_white_cross() {
+int RubikCube::make_white_cross() {
 
     int i = 0;
     while (cubes[0][2][1].white_n != up_vec || cubes[1][2][0].white_n != up_vec || cubes[1][2][2].white_n != up_vec ||
@@ -647,8 +658,10 @@ void RubikCube::make_white_cross() {
         white_to_up();
         y();
         ++i;
+
+        //white-green
         //1 случай
-        if (cubes[2][1][2].white_n == front_vec && cubes[2][2][1].white_n != up_vec) {
+        if (cubes[2][1][2].white_n == front_vec && cubes[2][1][2].white_n != up_vec) {
             R();
         }
         //2 случай
@@ -690,7 +703,7 @@ void RubikCube::make_white_cross() {
             if (i % 2 == 1) {
                 F_back();
                 L_back();
-            }else{
+            } else {
                 F();
                 R();
             }
@@ -700,7 +713,7 @@ void RubikCube::make_white_cross() {
             if (i % 2 == 1) {
                 F_back();
                 R();
-            }else{
+            } else {
                 F();
                 L_back();
             }
@@ -710,7 +723,75 @@ void RubikCube::make_white_cross() {
             F2();
 
     }
+    int m = 0;
+    while (true) {
+        ++m;
+        int k = 0;
+        // Проверка совпадения цветов краевых кубиков с цветом средних кубиков соответствующих граней
+        std::cout << cubes[1][1][2].get_color_by_n(front_vec) << std::endl;
+        if (cubes[1][1][2].get_color_by_n(front_vec) == cubes[1][2][2].get_color_by_n(front_vec)) {
+            std::cout << cubes[1][1][2].get_color_by_n(front_vec) << std::endl;
+            ++k;
+        }
+        if (cubes[2][1][1].get_color_by_n(right_vec) == cubes[2][2][1].get_color_by_n(right_vec)) {
+            std::cout << cubes[2][1][1].get_color_by_n(right_vec) << std::endl;
+            ++k;
+        }
+        if (cubes[1][1][0].get_color_by_n(-front_vec) == cubes[1][2][0].get_color_by_n(-front_vec)) {
+            std::cout << cubes[1][1][0].get_color_by_n(-front_vec) << std::endl;
+
+            ++k;
+        }
+        if (cubes[0][1][1].get_color_by_n(-right_vec) == cubes[0][2][1].get_color_by_n(-right_vec)) {
+            std::cout << cubes[0][1][1].get_color_by_n(-right_vec) << std::endl;
+            ++k;
+        }
+        if (k >= 2) {
+            break;
+        }
+        U(); // Вращаем верхнюю грань, чтобы выровнять крест с центрами
+        if (m > 12) {
+            R();
+            F_back();
+            R2();
+            F2();
+            return 1;
+            break;
+        }
+
+    }
+    return 0;
+
 }
+
+
+void RubikCube::make_perfect_cross() {
+    while(true) {
+        int f1 = 0;
+        for (int i = 0; i < 10; ++i) {
+            y();
+//         Проверка совпадения цветов краевых кубиков с цветом средних кубиков соответствующих граней
+            if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[1][1][0].get_color_by_n(-front_vec)) {
+                pif_paf();
+                R();
+                f1 = 1;
+            }
+        }
+
+        int f2 = 0;
+        for (int i = 0; i < 10; ++i) {
+            y();
+//         Проверка совпадения цветов краевых кубиков с цветом средних кубиков соответствующих граней
+            if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[0][1][1].get_color_by_n(-front_vec)) {
+                pif_paf();
+                f2 = 0;
+            }
+        }
+        if(f1 == 0 && f2 == 0)
+            break;
+    }
+}
+
 //крч перемещение куба в руках для Пиф Пафа можно реализовать с помощью общего поворота всех граней куба вокруг своих осей.
 
 //горизонтальные
