@@ -770,6 +770,9 @@ void RubikCube::make_perfect_cross() {
         int f1 = 0;
         for (int i = 0; i < 10; ++i) {
             y();
+            if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[0][1][1].get_color_by_n(-front_vec)) {
+                pif_paf();
+            }
 //         Проверка совпадения цветов краевых кубиков с цветом средних кубиков соответствующих граней
             if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[1][1][0].get_color_by_n(-front_vec)) {
                 pif_paf();
@@ -778,16 +781,7 @@ void RubikCube::make_perfect_cross() {
             }
         }
 
-        int f2 = 0;
-        for (int i = 0; i < 10; ++i) {
-            y();
-//         Проверка совпадения цветов краевых кубиков с цветом средних кубиков соответствующих граней
-            if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[0][1][1].get_color_by_n(-front_vec)) {
-                pif_paf();
-                f2 = 0;
-            }
-        }
-        if(f1 == 0 && f2 == 0)
+        if(f1 == 0)
             break;
     }
 }
