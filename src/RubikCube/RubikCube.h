@@ -11,11 +11,20 @@
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <stack>
+
 class RubikCube {
 public:
+    glm::vec3 right_center_coords;
+    glm::vec3 front_center_coords;
+    glm::vec3 up_center_coords;
+
+    glm::vec3 up_vec;
+    glm::vec3 front_vec;
+    glm::vec3 right_vec;
     std::vector<std::vector<std::vector<Cube> > > cubes;
     std::vector<char> st;
     Shader *shader;
+
     RubikCube(Shader *shader);
 
     void draw();
@@ -38,7 +47,7 @@ public:
 
     void swap_vertical_matrix(int layer);
 
-    int load_from_file(const char* filename);
+    int load_from_file(const char *filename);
 
     void solve(float angle);
 
@@ -46,11 +55,11 @@ public:
 
     void swap_vertical_matrix_back();
 
-    void write_state(const char* fileName);
+    void write_state(const char *fileName);
 
-    void pifPaf(int up, int right);
 
     void y_swap_cube();
+
     void y_backwards_swap_cube();
 
     void x_swap_cube();
@@ -63,6 +72,57 @@ public:
     int orange_center_id;
 
     glm::vec3 find_cube_coords(int id);
+
+    //actions
+    void R();
+
+    void R2();
+
+    void R_back();
+
+    void L();
+
+    void L2();
+
+    void L_back();
+
+    void U();
+
+    void U2();
+
+    void U_back();
+
+
+    void F();
+
+    void F2();
+
+    void F_back();
+
+    void pif_paf();
+
+    void left_pif_paf();
+
+    void y();
+
+    void y_back();
+
+    //solve algorithms
+    void white_to_up();
+
+    void make_white_cross();
+
+    void first_layer();
+
+    void second_layer();
+
+    void yellow_cross();
+
+    void third_layer();
+
+    void rebra();
+
+    void make_corners();
 
 };
 

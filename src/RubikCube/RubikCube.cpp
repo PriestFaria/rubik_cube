@@ -8,13 +8,23 @@
 #include "../Window/Window.h"
 
 RubikCube::RubikCube(Shader *shader) : shader(shader) {
+    right_center_coords = glm::vec3(2, 1, 1);
+    front_center_coords = glm::vec3(1, 1, 2);
+    up_center_coords = glm::vec3(1, 2, 1);
+
+
+    up_vec = glm::vec3(0, 1, 0);
+    front_vec = glm::vec3(0, 0, 1);
+    right_vec = glm::vec3(1, 0, 0);
+
     green_center_id = 5;
     orange_center_id = 11;
     blue_center_id = 23;
-    yellow_center_id=15;
+    yellow_center_id = 15;
     red_center_id = 17;
     white_center_id = 13;
-    cubes = std::vector<std::vector<std::vector<Cube> > >(3, std::vector<std::vector<Cube> >(3, std::vector<Cube>(3,Cube())));
+    cubes = std::vector<std::vector<std::vector<Cube> > >(3, std::vector<std::vector<Cube> >(3, std::vector<Cube>(3,
+                                                                                                                  Cube())));
     int id = 0;
     for (int x = 0; x < 3; ++x) {
         for (int y = 0; y < 3; ++y) {
@@ -432,82 +442,14 @@ int RubikCube::load_from_file(const char *filename) {
 }
 
 void RubikCube::solve(float angle) {
-    std::vector<char> reversedSt(st.rbegin(), st.rend());
-    for (auto k: reversedSt) {
-        if (k == '1') {
-            //верх
-            for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90 / angle; ++i) {
-                    rotate_horizontal(2, angle);
-                    draw();
-                    Window::swapBuffers();
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                }
-
-                swap_horizontal_matrix(2);
-            }
-        }
-        if (k == '2') {
-            //передняя
-            for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90 / angle; ++i) {
-                    rotate_front(angle);
-                    draw();
-                    Window::swapBuffers();
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                }
-                swap_vertical_matrix_front();
-            }
-        }
-        if (k == '3') {
-            //низ
-            for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90 / angle; ++i) {
-                    rotate_horizontal(0, angle);
-                    draw();
-                    Window::swapBuffers();
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                }
-                swap_horizontal_matrix(0);
-            }
-        }
-        if (k == '4') {
-            //лево
-            for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90 / angle; ++i) {
-                    rotate_vertical(2, angle);
-                    draw();
-                    Window::swapBuffers();
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                }
-                swap_vertical_matrix(2);
-            }
-        }
-        if (k == '5') {
-            //средняя вертикальная
-            for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90 / angle; ++i) {
-                    rotate_back(angle);
-                    draw();
-                    Window::swapBuffers();
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                }
-                swap_vertical_matrix_back();
-            }
-        }
-        if (k == '6') {
-            for (int j = 0; j < 3; ++j) {
-                for (int i = 0; i < 90 / angle; ++i) {
-                    rotate_vertical(0, angle);
-                    draw();
-                    Window::swapBuffers();
-                    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                }
-                swap_vertical_matrix(0);
-            }
-        }
-    }
-    st.erase(st.begin(), st.end());
+    white_to_up();
+    make_white_cross();
+//    first_layer();
+//    second_layer();
+//    yellow_cross();
+//    third_layer();
+//    rebra();
+//    make_corners();
 }
 
 void RubikCube::write_state(const char *fileName) {
@@ -533,12 +475,10 @@ void RubikCube::y_swap_cube() {
     }
     swap_horizontal_matrix(0);
 
-
     swap_horizontal_matrix(2);
 
     swap_horizontal_matrix(1);
 }
-
 
 
 void RubikCube::y_backwards_swap_cube() {
@@ -566,17 +506,211 @@ void RubikCube::x_swap_cube() {
     swap_vertical_matrix(0);
 }
 
-glm::vec3 RubikCube::find_cube_coords(int id){
-    for(int x = 0; x < 3; ++x){
-        for(int y = 0; y < 3; ++y){
-            for(int z = 0; z < 3; ++z){
-                if(cubes[x][y][z].id == id)
-                    return glm::vec3(x,y,z);
+glm::vec3 RubikCube::find_cube_coords(int id) {
+    for (int x = 0; x < 3; ++x) {
+        for (int y = 0; y < 3; ++y) {
+            for (int z = 0; z < 3; ++z) {
+                if (cubes[x][y][z].id == id)
+                    return glm::vec3(x, y, z);
             }
         }
     }
 }
 
+void RubikCube::white_to_up() {
+    int i = 0;
+    while (find_cube_coords(white_center_id) != up_center_coords) {
+        x_swap_cube();
+        if (i % 3 == 0) {
+            y_swap_cube();
+        }
+        ++i;
+    }
+}
+
+void RubikCube::R() {
+    for (int i = 0; i < 45; ++i) {
+        rotate_vertical(2, 2.0f);
+        draw();
+
+        Window::swapBuffers();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    swap_vertical_matrix(2);
+}
+
+void RubikCube::R2() {
+    R();
+    R();
+}
+
+void RubikCube::R_back() {
+    R();
+    R();
+    R();
+}
+
+void RubikCube::L() {
+    for (int i = 0; i < 45; ++i) {
+        rotate_vertical(0, 2.0f);
+        draw();
+        Window::swapBuffers();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    swap_vertical_matrix(0);
+}
+
+void RubikCube::L2() {
+    L();
+    L();
+}
+
+void RubikCube::L_back() {
+    L();
+    L();
+    L();
+}
+
+void RubikCube::U() {
+    for (int i = 0; i < 45; ++i) {
+        rotate_horizontal(2, 2.0f);
+
+        draw();
+        Window::swapBuffers();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    swap_horizontal_matrix(2);
+}
+
+void RubikCube::U2() {
+    U();
+    U();
+}
+
+void RubikCube::U_back() {
+    U();
+    U();
+    U();
+}
+
+void RubikCube::F() {
+    for (int i = 0; i < 45; ++i) {
+        rotate_back(2.0f);
+        draw();
+
+        Window::swapBuffers();
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    }
+    swap_vertical_matrix_back();
+}
+
+void RubikCube::F2() {
+    F();
+    F();
+}
+
+
+void RubikCube::F_back() {
+    F();
+    F();
+    F();
+}
+
+
+void RubikCube::pif_paf() {
+    R();
+    U();
+    R_back();
+    U_back();
+}
+
+void RubikCube::left_pif_paf() {
+    L_back();
+    U_back();
+    L();
+    U();
+}
+
+void RubikCube::y() {
+    y_swap_cube();
+}
+
+void RubikCube::y_back() {
+    y_backwards_swap_cube();
+}
+
+void RubikCube::make_white_cross() {
+
+    int i = 0;
+    while (cubes[0][2][1].white_n != up_vec || cubes[1][2][0].white_n != up_vec || cubes[1][2][2].white_n != up_vec ||
+           cubes[2][2][1].white_n != up_vec) {
+        white_to_up();
+        y();
+        ++i;
+        //1 случай
+        if (cubes[2][1][2].white_n == front_vec && cubes[2][2][1].white_n != up_vec) {
+            R();
+        }
+        //2 случай
+        if (cubes[0][1][2].white_n == front_vec && cubes[0][2][1].white_n != up_vec) {
+            L_back();
+        }
+        //3 случай
+        if (cubes[2][1][2].white_n == front_vec && cubes[2][2][1].white_n == up_vec) {
+            if (i % 3 == 0) {
+                U();
+                R();
+            }
+            if (i % 3 == 1) {
+                U_back();
+                R();
+            }
+            if (i % 3 == 2) {
+                U2();
+                R();
+            }
+        }
+        //4 случай
+        if (cubes[0][1][2].white_n == front_vec && cubes[0][2][1].white_n == up_vec) {
+            if (i % 3 == 0) {
+                U();
+                L_back();
+            }
+            if (i % 3 == 1) {
+                U_back();
+                L_back();
+            }
+            if (i % 3 == 2) {
+                U2();
+                L_back();
+            }
+        }
+        //5 случай
+        if (cubes[1][2][2].white_n == front_vec) {
+            if (i % 2 == 1) {
+                F_back();
+                L_back();
+            }else{
+                F();
+                R();
+            }
+        }
+        //6 случай
+        if (cubes[1][0][2].white_n == front_vec) {
+            if (i % 2 == 1) {
+                F_back();
+                R();
+            }else{
+                F();
+                L_back();
+            }
+        }
+        //7 случай
+        if (cubes[1][0][2].white_n == -up_vec)
+            F2();
+
+    }
+}
 //крч перемещение куба в руках для Пиф Пафа можно реализовать с помощью общего поворота всех граней куба вокруг своих осей.
 
 //горизонтальные

@@ -150,7 +150,6 @@ int main(void) {
         }
 
 
-
         if (Events::jpressed(GLFW_KEY_H)) {
             // Вращение задней  грани кубика
 
@@ -179,23 +178,23 @@ int main(void) {
             cube.x_swap_cube();
         }
 
-        if (Events::jpressed(GLFW_KEY_1)){
+        if (Events::jpressed(GLFW_KEY_1)) {
             glm::vec3 coords = cube.find_cube_coords(cube.red_center_id);
             std::cout << "( " << coords.x << ", " << coords.y << ", " << coords.z << " )";
         }
 
-        if(Events::jpressed(GLFW_KEY_Y)){
-            std::string filename;
-            std::cout << "Input write file name: ";
-            std::cin >> filename;
-            cube.write_state(filename.c_str());
-        }
-        if (Events::jpressed(GLFW_KEY_U)){
-            std::string filename;
-            std::cout << "Input load file name: ";
-            std::cin >> filename;
-            cube.load_from_file(filename.c_str());
-        }
+//        if (Events::jpressed(GLFW_KEY_Y)) {
+//            std::string filename;
+//            std::cout << "Input write file name: ";
+//            std::cin >> filename;
+//            cube.write_state(filename.c_str());
+//        }
+//        if (Events::jpressed(GLFW_KEY_U)) {
+//            std::string filename;
+//            std::cout << "Input load file name: ";
+//            std::cin >> filename;
+//            cube.load_from_file(filename.c_str());
+//        }
         camX += -Events::dX / Window::height;
         camY += -Events::dY / Window::height;
 
