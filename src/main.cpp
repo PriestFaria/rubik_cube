@@ -87,8 +87,8 @@ int main(void) {
 
         if (Events::jpressed(GLFW_KEY_V)) {
             // Вращение верхней грани кубика
-            for (int i = 0; i < 45; ++i) {
-                cube.rotate_horizontal(2, 2.0f);
+            for (int i = 0; i < 15; ++i) {
+                cube.rotate_horizontal(2, 6.0f);
 
                 cube.draw();
                 Window::swapBuffers();
@@ -102,8 +102,8 @@ int main(void) {
         if (Events::jpressed(GLFW_KEY_B)) {
             // Вращение передней грани кубика
 
-            for (int i = 0; i < 45; ++i) {
-                cube.rotate_front(2.0f);
+            for (int i = 0; i < 15; ++i) {
+                cube.rotate_front(6.0f);
                 cube.draw();
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -114,8 +114,8 @@ int main(void) {
 
         if (Events::jpressed(GLFW_KEY_N)) {
             // Вращение нижней грани кубика
-            for (int i = 0; i < 45; ++i) {
-                cube.rotate_horizontal(0, 2.0f);
+            for (int i = 0; i < 15; ++i) {
+                cube.rotate_horizontal(0, 6.0f);
                 cube.draw();
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -127,8 +127,8 @@ int main(void) {
 
         if (Events::jpressed(GLFW_KEY_G)) {
             // Вращение правой грани кубика
-            for (int i = 0; i < 45; ++i) {
-                cube.rotate_vertical(0, 2.0f);
+            for (int i = 0; i < 15; ++i) {
+                cube.rotate_vertical(0, 6.0f);
                 cube.draw();
                 Window::swapBuffers();
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -138,8 +138,8 @@ int main(void) {
         }
         if (Events::jpressed(GLFW_KEY_J)) {
             // Вращение левой грани кубика
-            for (int i = 0; i < 45; ++i) {
-                cube.rotate_vertical(2, 2.0f);
+            for (int i = 0; i < 15; ++i) {
+                cube.rotate_vertical(2, 6.0f);
                 cube.draw();
 
                 Window::swapBuffers();
@@ -154,8 +154,8 @@ int main(void) {
             // Вращение задней  грани кубика
 
             //на деле тут зад вертикальный
-            for (int i = 0; i < 45; ++i) {
-                cube.rotate_back(2.0f);
+            for (int i = 0; i < 15; ++i) {
+                cube.rotate_back(6.0f);
                 cube.draw();
 
                 Window::swapBuffers();

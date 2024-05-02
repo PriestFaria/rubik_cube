@@ -475,10 +475,10 @@ void RubikCube::write_state(const char *fileName) {
 
 
 void RubikCube::y_swap_cube() {
-    for (int i = 0; i < 15; ++i) {
-        rotate_horizontal(0, 6);
-        rotate_horizontal(2, 6);
-        rotate_horizontal(1, 6);
+    for (int i = 0; i < 5; ++i) {
+        rotate_horizontal(0, 18);
+        rotate_horizontal(2, 18);
+        rotate_horizontal(1, 18);
 
         draw();
         Window::swapBuffers();
@@ -499,10 +499,10 @@ void RubikCube::y_backwards_swap_cube() {
 };
 
 void RubikCube::x_swap_cube() {
-    for (int i = 0; i < 15; ++i) {
-        rotate_vertical(2, 6.0f);
-        rotate_vertical(1, 6.0f);
-        rotate_vertical(0, 6.0f);
+    for (int i = 0; i < 5; ++i) {
+        rotate_vertical(2, 18.0f);
+        rotate_vertical(1, 18.0f);
+        rotate_vertical(0, 18.0f);
 
         draw();
 
@@ -775,15 +775,14 @@ int RubikCube::make_white_cross() {
 void RubikCube::make_perfect_cross() {
     while(true) {
         int f1 = 0;
-        for (int i = 0; i < 20; ++i) {
+        for (int i = 0; i < 12; ++i) {
             y();
-            if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[0][1][1].get_color_by_n(-front_vec)) {
+            if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[1][1][0].get_color_by_n(-front_vec)) {
                 pif_paf();
                 R();
                 f1 = 1;
             }
-//         Проверка совпадения цветов краевых кубиков с цветом средних кубиков соответствующих граней
-            if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[1][1][0].get_color_by_n(-front_vec)) {
+            if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[0][1][1].get_color_by_n(-front_vec)) {
                 pif_paf();
                 R();
                 f1 = 1;
