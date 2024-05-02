@@ -155,19 +155,19 @@ glm::vec3 Cube::yellow_n() {
 }
 
 
-int Cube::get_color_by_n(glm::vec3 n){
+char Cube::get_color_by_n(glm::vec3 n){
     if(white_n == n)
-        return 0;
+        return 'w';
     if(blue_n == n)
-        return 1;
+        return 'b';
     if(red_n == n)
-        return 2;
+        return 'r';
     if(yellow_n() == n)
-        return 3;
+        return 'y';
     if(orange_n() == n)
-        return 4;
+        return 'o';
     if(green_n() == n)
-        return 5;
+        return 'g';
     else{
         std::cout << "WHITE: X: "<< white_n.x << " Y: " << white_n.y << " Z: " << white_n.z << std::endl;
         std::cout << "BLUE: X: "<< blue_n.x << " Y: " << blue_n.y << " Z: " << blue_n.z << std::endl;

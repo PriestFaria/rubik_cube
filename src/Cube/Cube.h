@@ -28,7 +28,7 @@ public:
     GLuint VAO, VBO, colorbuffer;
     static float colors[108];
     static float vertices[108];
-    int get_color_by_n(glm::vec3 n);
+    char get_color_by_n(glm::vec3 n);
 };
 
 #endif //OPENGL_TUTORIAL_CUBE_H

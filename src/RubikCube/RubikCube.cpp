@@ -383,13 +383,9 @@ void RubikCube::swap_vertical_matrix(int layer) {
                 cubes[layer][x][z].red_n = transformed_red_n; // Обновляем вектор после вращения
 
 
-            std::cout << "WHITE( " << cubes[layer][x][z].white_n.x << ", " << cubes[layer][x][z].white_n.y << ", "
-                      << cubes[layer][x][z].white_n.z << " )" << std::endl;
-            std::cout << "BLUE( " << cubes[layer][x][z].blue_n.x << ", " << cubes[layer][x][z].blue_n.y << ", "
-                      << cubes[layer][x][z].blue_n.z << " )" << std::endl;
+
         }
     }
-    std::cout << "============================" << std::endl;
 
 }
 
@@ -725,11 +721,11 @@ int RubikCube::make_white_cross() {
             r = 0;
         }
         //7 случай
-        if (cubes[1][0][2].white_n == -up_vec){
+        if (cubes[1][0][2].white_n == -up_vec) {
             F2();
             r++;
             //разборка при зацикливании
-            if(r >= 10){
+            if (r >= 10) {
                 pif_paf();
                 F();
                 R();
@@ -745,7 +741,6 @@ int RubikCube::make_white_cross() {
         ++m;
         int k = 0;
         // Проверка совпадения цветов краевых кубиков с цветом средних кубиков соответствующих граней
-        std::cout << cubes[1][1][2].get_color_by_n(front_vec) << std::endl;
         if (cubes[1][1][2].get_color_by_n(front_vec) == cubes[1][2][2].get_color_by_n(front_vec)) {
             std::cout << cubes[1][1][2].get_color_by_n(front_vec) << std::endl;
             ++k;
@@ -773,25 +768,97 @@ int RubikCube::make_white_cross() {
 
 
 void RubikCube::make_perfect_cross() {
-    while(true) {
+    while (true) {
         int f1 = 0;
-        for (int i = 0; i < 12; ++i) {
+        for (int i = 0; i < 20; ++i) {
             y();
             if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[1][1][0].get_color_by_n(-front_vec)) {
                 pif_paf();
                 R();
                 f1 = 1;
             }
-            if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[0][1][1].get_color_by_n(-front_vec)) {
+            if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[0][1][1].get_color_by_n(-right_vec)) {
                 pif_paf();
                 R();
                 f1 = 1;
             }
         }
 
-        if(f1 == 0)
+        if (f1 == 0)
             break;
     }
+}
+
+void RubikCube::first_layer() {
+    x_swap_cube();
+    x_swap_cube();
+    int i = 0;
+    int f = 0;
+    while (true) {
+        f = 0;
+        if (cubes[2][2][2].white_n == right_vec) {
+            while (!(cubes[2][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
+                     cubes[1][1][2].get_color_by_n(front_vec) ==
+                     cubes[1][0][2].get_color_by_n(front_vec) &&
+                     cubes[2][2][2].get_color_by_n(up_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+                     cubes[2][1][1].get_color_by_n(right_vec) ==
+                     cubes[2][0][1].get_color_by_n(right_vec))) {
+                std::cout << "1" << std::endl;
+                U();
+                y_back();
+            }
+            pif_paf();
+            f = 1;
+        }
+        if (cubes[2][2][2].white_n == up_vec) {
+            std::cout << cubes[2][2][2].get_color_by_n(right_vec) << "- COLOR\n";
+            while (!(cubes[2][2][2].get_color_by_n(right_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
+                     cubes[1][1][2].get_color_by_n(front_vec) ==
+                     cubes[1][0][2].get_color_by_n(front_vec) &&
+                     cubes[2][2][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+                     cubes[2][1][1].get_color_by_n(right_vec) ==
+                     cubes[2][0][1].get_color_by_n(right_vec))    ) {
+                std::cout << "2" << std::endl;
+
+                U();
+                y_back();
+            }
+            f = 1;
+            pif_paf();
+            pif_paf();
+            pif_paf();
+        }
+        if (cubes[2][2][2].white_n == front_vec) {
+            while (!(cubes[2][2][2].get_color_by_n(up_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
+                     cubes[1][1][2].get_color_by_n(front_vec) ==
+                     cubes[1][0][2].get_color_by_n(front_vec) &&
+                     cubes[2][2][2].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+                     cubes[2][1][1].get_color_by_n(right_vec) ==
+                     cubes[2][0][1].get_color_by_n(right_vec))) {
+                std::cout << "3" << std::endl;
+                U();
+                y_back();
+            }
+            f = 1;
+            pif_paf();
+            pif_paf();
+            pif_paf();
+            pif_paf();
+            pif_paf();
+        }
+        if (cubes[2][0][2].white_n == front_vec || cubes[2][0][2].white_n == right_vec ||
+            (cubes[2][0][2].white_n == -up_vec &&
+             cubes[2][0][2].get_color_by_n(front_vec) != cubes[1][1][2].get_color_by_n(front_vec) &&
+             cubes[2][0][2].get_color_by_n(right_vec) != cubes[2][1][1].get_color_by_n(right_vec))) {
+            std::cout << "4" << std::endl;
+            pif_paf();
+            f = 1;
+        }
+        if (f == 0) {
+            break;
+        }
+    }
+    // ПЕРЕДЕЛАТЬ НА 4 FOR'а
 }
 
 //крч перемещение куба в руках для Пиф Пафа можно реализовать с помощью общего поворота всех граней куба вокруг своих осей.
