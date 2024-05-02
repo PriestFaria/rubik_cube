@@ -651,8 +651,8 @@ void RubikCube::y_back() {
 }
 
 int RubikCube::make_white_cross() {
-
     int i = 0;
+    int r = 0;
     while (cubes[0][2][1].white_n != up_vec || cubes[1][2][0].white_n != up_vec || cubes[1][2][2].white_n != up_vec ||
            cubes[2][2][1].white_n != up_vec) {
         white_to_up();
@@ -663,10 +663,12 @@ int RubikCube::make_white_cross() {
         //1 случай
         if (cubes[2][1][2].white_n == front_vec && cubes[2][1][2].white_n != up_vec) {
             R();
+            r = 0;
         }
         //2 случай
         if (cubes[0][1][2].white_n == front_vec && cubes[0][2][1].white_n != up_vec) {
             L_back();
+            r = 0;
         }
         //3 случай
         if (cubes[2][1][2].white_n == front_vec && cubes[2][2][1].white_n == up_vec) {
@@ -682,6 +684,7 @@ int RubikCube::make_white_cross() {
                 U2();
                 R();
             }
+            r = 0;
         }
         //4 случай
         if (cubes[0][1][2].white_n == front_vec && cubes[0][2][1].white_n == up_vec) {
@@ -697,6 +700,7 @@ int RubikCube::make_white_cross() {
                 U2();
                 L_back();
             }
+            r = 0;
         }
         //5 случай
         if (cubes[1][2][2].white_n == front_vec) {
@@ -707,6 +711,7 @@ int RubikCube::make_white_cross() {
                 F();
                 R();
             }
+            r = 0;
         }
         //6 случай
         if (cubes[1][0][2].white_n == front_vec) {
@@ -717,10 +722,22 @@ int RubikCube::make_white_cross() {
                 F();
                 L_back();
             }
+            r = 0;
         }
         //7 случай
-        if (cubes[1][0][2].white_n == -up_vec)
+        if (cubes[1][0][2].white_n == -up_vec){
             F2();
+            r++;
+            //разборка при зацикливании
+            if(r >= 10){
+                pif_paf();
+                F();
+                R();
+                F2();
+                U();
+                r = 0;
+            }
+        }
 
     }
     int m = 0;
@@ -761,17 +778,19 @@ int RubikCube::make_white_cross() {
 
     }
     return 0;
-
+    make_white_cross();
 }
 
 
 void RubikCube::make_perfect_cross() {
     while(true) {
         int f1 = 0;
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < 20; ++i) {
             y();
             if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[0][1][1].get_color_by_n(-front_vec)) {
                 pif_paf();
+                R();
+                f1 = 1;
             }
 //         Проверка совпадения цветов краевых кубиков с цветом средних кубиков соответствующих граней
             if (cubes[2][2][1].get_color_by_n(right_vec) == cubes[1][1][0].get_color_by_n(-front_vec)) {

@@ -112,6 +112,8 @@ public:
 
     int make_white_cross();
 
+    bool check_prefect_cross();
+
     void first_layer();
 
     void second_layer();
