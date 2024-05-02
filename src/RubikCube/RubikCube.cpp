@@ -767,18 +767,8 @@ int RubikCube::make_white_cross() {
             break;
         }
         U(); // Вращаем верхнюю грань, чтобы выровнять крест с центрами
-        if (m > 12) {
-            R();
-            F_back();
-            R2();
-            F2();
-            return 1;
-            break;
-        }
-
     }
     return 0;
-    make_white_cross();
 }
 
 
