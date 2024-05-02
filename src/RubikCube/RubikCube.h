@@ -101,6 +101,8 @@ public:
 
     void pif_paf();
 
+    void pif_paf_back();
+
     void left_pif_paf();
 
     void y();
