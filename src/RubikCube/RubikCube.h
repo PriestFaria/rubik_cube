@@ -128,6 +128,8 @@ public:
     void make_corners();
 
     void make_perfect_cross();
+
+    bool check_if_up_solved();
 };
 
 

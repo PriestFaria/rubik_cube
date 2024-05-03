@@ -455,9 +455,9 @@ void RubikCube::solve(float angle) {
     first_layer();
     second_layer();
     yellow_cross();
-//    third_layer();
-//    rebra();
-//    make_corners();
+    third_layer();
+    rebra();
+    make_corners();
 }
 
 void RubikCube::write_state(const char *fileName) {
@@ -1024,9 +1024,9 @@ void RubikCube::yellow_cross() {
             pif_paf();
             F_back();
         }
-        if(cubes[1][2][0].yellow_n() != up_vec && cubes[1][2][1].yellow_n() == up_vec &&
-           cubes[0][2][1].yellow_n() != up_vec && cubes[2][2][1].yellow_n() != up_vec &&
-           cubes[1][2][2].yellow_n() != up_vec){
+        if (cubes[1][2][0].yellow_n() != up_vec && cubes[1][2][1].yellow_n() == up_vec &&
+            cubes[0][2][1].yellow_n() != up_vec && cubes[2][2][1].yellow_n() != up_vec &&
+            cubes[1][2][2].yellow_n() != up_vec) {
             F();
             pif_paf();
             F_back();
@@ -1037,6 +1037,182 @@ void RubikCube::yellow_cross() {
             pif_paf();
             pif_paf();
             F_back();
+        }
+    }
+}
+
+void RubikCube::third_layer() {
+    std::cout << "THIRD LAYER\n";
+    x_swap_cube();
+    y();
+    while (!(cubes[0][2][0].yellow_n() == -right_vec && cubes[0][0][0].yellow_n() == -right_vec &&
+             cubes[0][2][2].yellow_n() == -right_vec && cubes[0][0][2].yellow_n() == -right_vec)) {
+        L();
+        if (cubes[0][2][0].yellow_n() == up_vec) {
+            pif_paf();
+            pif_paf();
+            pif_paf();
+            pif_paf();
+        }
+        if (cubes[0][2][0].yellow_n() == -front_vec) {
+            pif_paf();
+            pif_paf();
+        }
+    }
+}
+
+void RubikCube::rebra() {
+    std::cout << "REBRA\n";
+    y();
+    x_swap_cube();
+    int k = 0;
+    while (!(cubes[2][2][1].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+             cubes[1][2][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec) &&
+             cubes[0][2][1].get_color_by_n(-right_vec) == cubes[0][1][1].get_color_by_n(-right_vec) &&
+             cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec))) {
+        U();
+        y_back();
+        if (cubes[1][2][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec) &&
+            cubes[0][2][1].get_color_by_n(-right_vec) == cubes[0][1][1].get_color_by_n(-right_vec)) {
+            R();
+            U();
+            R_back();
+            F_back();
+            R();
+            U();
+            R_back();
+            U_back();
+            R_back();
+            F();
+            R2();
+            U_back();
+            R_back();
+            U_back();
+            k = 0;
+        }
+        if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
+            cubes[1][2][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec)) {
+            R();
+            U();
+            R_back();
+            F_back();
+            R();
+            U();
+            R_back();
+            U_back();
+            R_back();
+            F();
+            R2();
+            U_back();
+            R_back();
+            U_back();
+
+            U2();
+
+            R();
+            U();
+            R_back();
+            F_back();
+            R();
+            U();
+            R_back();
+            U_back();
+            R_back();
+            F();
+            R2();
+            U_back();
+            R_back();
+            U_back();
+
+            U_back();
+            k = 0;
+        }
+        y();
+        ++k;
+        if (k == 16)
+            break;
+    }
+
+}
+
+bool RubikCube::check_if_up_solved() {
+    int fl = 1;
+    for (int i = 0; i < 4; ++i) {
+        if (!(
+                cubes[2][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
+                cubes[2][2][2].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+                cubes[2][2][2].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+
+                cubes[2][2][1].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+                cubes[2][2][1].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+
+                cubes[2][2][0].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+                cubes[2][2][0].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+                cubes[2][2][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec)
+        )) {
+            fl = 0;
+        }
+    }
+    return fl;
+}
+
+
+void RubikCube::make_corners() {
+    while (!check_if_up_solved()) {
+        int fl = 0;
+        for (int i = 0; i < 4; ++i) {
+            y();
+            if (cubes[2][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
+                cubes[2][2][2].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec)) {
+                std::cout << "MAKE CORNERS" << std::endl;
+                y();
+                y();
+                x_swap_cube();
+                y();
+                x_swap_cube();
+                x_swap_cube();
+                x_swap_cube();
+
+
+                U2();
+                R();
+                U2();
+                R_back();
+                F2();
+                U2();
+                L_back();
+                U2();
+                L();
+                F2();
+
+                y();
+                x_swap_cube();
+                fl = 1;
+            }
+        }
+        if (!fl) {
+            std::cout << "MAKE CORNERS 2" << std::endl;
+            y();
+            y();
+            x_swap_cube();
+            y();
+            x_swap_cube();
+            x_swap_cube();
+            x_swap_cube();
+
+
+            U2();
+            R();
+            U2();
+            R_back();
+            F2();
+            U2();
+            L_back();
+            U2();
+            L();
+            F2();
+            y();
+            x_swap_cube();
         }
     }
 }
