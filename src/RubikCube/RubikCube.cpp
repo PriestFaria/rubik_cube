@@ -971,8 +971,7 @@ void RubikCube::second_layer() {
             found = 0;
         }
         if (cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
-            cubes[2][1][1].get_color_by_n(right_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
-            cubes[2][1][2].get_color_by_n(right_vec) != cubes[1][1][2].get_color_by_n(front_vec) &&
+            cubes[2][1][2].get_color_by_n(right_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
             cubes[2][1][2].yellow_n() != right_vec) {
             std::cout << 3 << std::endl;
             pif_paf();
