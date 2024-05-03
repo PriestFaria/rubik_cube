@@ -947,7 +947,7 @@ void RubikCube::second_layer() {
             found = 1;
         }
         if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
-            cubes[1][2][2].get_color_by_n(up_vec) != cubes[2][1][1].get_color_by_n(right_vec)) {
+            cubes[1][2][2].get_color_by_n(up_vec) != cubes[2][1][1].get_color_by_n(right_vec) && cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec) {
             std::cout << 1 << std::endl;
             U_back();
             left_pif_paf();
@@ -958,7 +958,7 @@ void RubikCube::second_layer() {
             found = 0;
         }
         if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
-            cubes[1][2][2].get_color_by_n(up_vec) == cubes[2][1][1].get_color_by_n(right_vec)) {
+            cubes[1][2][2].get_color_by_n(up_vec) == cubes[2][1][1].get_color_by_n(right_vec) && cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec) {
             std::cout << 2 << std::endl;
             U();
             pif_paf();
@@ -974,24 +974,20 @@ void RubikCube::second_layer() {
             pif_paf();
             y();
             left_pif_paf();
-            U();
-            U();
+
             f = 1;
             k = 0;
-            found = 1;
+
         }
         if (cubes[1][1][2].get_color_by_n(front_vec) != cubes[2][1][2].get_color_by_n(front_vec)
             && cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec)
-            && cubes[2][1][2].get_color_by_n(right_vec) != cubes[1][1][2].get_color_by_n(front_vec)) {
+            && cubes[2][1][2].get_color_by_n(right_vec) != cubes[1][1][2].get_color_by_n(front_vec) && cubes[2][1][2].yellow_n() != right_vec) {
             std::cout << 4 << std::endl;
             pif_paf();
             y();
             left_pif_paf();
-            U();
-            U();
             f = 1;
             k = 0;
-            found = 1;
         }
         if (f == 0) {
             k++;
