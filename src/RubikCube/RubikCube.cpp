@@ -974,7 +974,7 @@ void RubikCube::second_layer() {
             pif_paf();
             y();
             left_pif_paf();
-
+            found = 0;
             f = 1;
             k = 0;
 
@@ -988,6 +988,7 @@ void RubikCube::second_layer() {
             left_pif_paf();
             f = 1;
             k = 0;
+            found = 0;
         }
         if (f == 0) {
             k++;
