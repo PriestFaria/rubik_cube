@@ -453,7 +453,7 @@ void RubikCube::solve(float angle) {
     while (make_white_cross());
     make_perfect_cross();
     first_layer();
-//    second_layer();
+    second_layer();
 //    yellow_cross();
 //    third_layer();
 //    rebra();
@@ -537,24 +537,24 @@ void RubikCube::white_to_up() {
 }
 
 void RubikCube::R() {
-    for (int i = 0; i < 15; ++i) {
-        rotate_vertical(2, 6.0f);
+    for (int i = 0; i < 5; ++i) {
+        rotate_vertical(2, 18.0f);
         draw();
 
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     swap_vertical_matrix(2);
-    for (int i = 0; i < 15; ++i) {
-        rotate_vertical(2, 6.0f);
+    for (int i = 0; i < 5; ++i) {
+        rotate_vertical(2, 18.0f);
         draw();
 
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     swap_vertical_matrix(2);
-    for (int i = 0; i < 15; ++i) {
-        rotate_vertical(2, 6.0f);
+    for (int i = 0; i < 5; ++i) {
+        rotate_vertical(2, 18.0f);
         draw();
 
         Window::swapBuffers();
@@ -575,8 +575,8 @@ void RubikCube::R_back() {
 }
 
 void RubikCube::L() {
-    for (int i = 0; i < 15; ++i) {
-        rotate_vertical(0, 6.0f);
+    for (int i = 0; i < 5; ++i) {
+        rotate_vertical(0, 18.0f);
         draw();
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -596,8 +596,8 @@ void RubikCube::L_back() {
 }
 
 void RubikCube::U() {
-    for (int i = 0; i < 15; ++i) {
-        rotate_horizontal(2, 6.0f);
+    for (int i = 0; i < 5; ++i) {
+        rotate_horizontal(2, 18.0f);
 
         draw();
         Window::swapBuffers();
@@ -618,8 +618,8 @@ void RubikCube::U_back() {
 }
 
 void RubikCube::F() {
-    for (int i = 0; i < 15; ++i) {
-        rotate_back(6.0f);
+    for (int i = 0; i < 5; ++i) {
+        rotate_back(18.0f);
         draw();
 
         Window::swapBuffers();
@@ -863,7 +863,7 @@ void RubikCube::first_layer() {
 //    }
     int i = 0;
     int f = 0;
-    for(int h = 0; h < 10; ++h){
+    for (int h = 0; h < 10; ++h) {
         y();
         if (cubes[2][2][2].white_n == right_vec) {
             for (int k = 0; k < 4; ++k) {
@@ -929,10 +929,67 @@ void RubikCube::first_layer() {
         }
 
     }
-    // ПЕРЕДЕЛАТЬ НА 4 FOR'а
 }
 
-//крч перемещение куба в руках для Пиф Пафа можно реализовать с помощью общего поворота всех граней куба вокруг своих осей.
+void RubikCube::second_layer() {
+    int k = 0;
+    //не соединяю ребро с центром — ИСПРАВИТЬ
+    int found = 0;
+    while (true) {
+        int f = 0;
+        if (found) {
+            U();
+            y_back();
+        } else {
+            y();
+        }
+        if(cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec)
+            found = 1;
+        if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
+            cubes[1][2][2].get_color_by_n(up_vec) != cubes[2][1][1].get_color_by_n(right_vec)) {
+            U_back();
+            left_pif_paf();
+            y_back();
+            pif_paf();
+            f = 1;
+            k = 0;
+            found = 0;
+        }
+        if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
+            cubes[1][2][2].get_color_by_n(up_vec) == cubes[2][1][1].get_color_by_n(right_vec)) {
+            U();
+            pif_paf();
+            y();
+            left_pif_paf();
+            f = 1;
+            k = 0;
+            found = 0;
+        }
+        if(cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec) && cubes[2][1][1].get_color_by_n(right_vec) == cubes[1][1][2].get_color_by_n(front_vec)){
+            pif_paf();
+            y();
+            left_pif_paf();
+            f = 1;
+            k = 0;
+        }
+        if(cubes[1][1][2].get_color_by_n(front_vec) != cubes[2][1][2].get_color_by_n(front_vec)
+        && cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec)
+        && cubes[2][1][2].get_color_by_n(right_vec) != cubes[1][1][2].get_color_by_n(front_vec)){
+            pif_paf();
+            y();
+            left_pif_paf();
+            f = 1;
+            k = 0;
+        }
+        if (f == 0) {
+            k++;
+            if (k == 32)
+                break;
+        }
+    }
+
+}
+
 
 //горизонтальные
 //1 - верхняя
