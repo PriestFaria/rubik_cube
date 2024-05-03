@@ -454,7 +454,7 @@ void RubikCube::solve(float angle) {
     make_perfect_cross();
     first_layer();
     second_layer();
-//    yellow_cross();
+    yellow_cross();
 //    third_layer();
 //    rebra();
 //    make_corners();
@@ -943,7 +943,8 @@ void RubikCube::second_layer() {
         } else {
             y();
         }
-        if (cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec && cubes[1][2][2].white_n != up_vec && cubes[1][2][2].white_n != front_vec) {
+        if (cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec &&
+            cubes[1][2][2].white_n != up_vec && cubes[1][2][2].white_n != front_vec) {
             found = 1;
         }
         if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
@@ -1001,6 +1002,43 @@ void RubikCube::second_layer() {
         }
     }
 
+}
+
+void RubikCube::yellow_cross() {
+    while (!(cubes[1][2][0].yellow_n() == up_vec && cubes[1][2][1].yellow_n() == up_vec &&
+             cubes[0][2][1].yellow_n() == up_vec && cubes[2][2][1].yellow_n() == up_vec &&
+             cubes[1][2][2].yellow_n() == up_vec)) {
+        y();
+        if (cubes[1][2][0].yellow_n() == up_vec && cubes[0][2][1].yellow_n() == up_vec &&
+            cubes[1][2][1].yellow_n() == up_vec && cubes[2][2][1].yellow_n() != up_vec &&
+            cubes[1][2][2].yellow_n() != up_vec) {
+            F();
+            pif_paf();
+            pif_paf();
+            F_back();
+        }
+        if (cubes[0][2][1].yellow_n() == up_vec && cubes[1][2][1].yellow_n() == up_vec &&
+            cubes[2][2][1].yellow_n() == up_vec
+            && cubes[1][2][0].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != up_vec) {
+            F();
+            pif_paf();
+            F_back();
+        }
+        if(cubes[1][2][0].yellow_n() != up_vec && cubes[1][2][1].yellow_n() == up_vec &&
+           cubes[0][2][1].yellow_n() != up_vec && cubes[2][2][1].yellow_n() != up_vec &&
+           cubes[1][2][2].yellow_n() != up_vec){
+            F();
+            pif_paf();
+            F_back();
+
+            U2();
+
+            F();
+            pif_paf();
+            pif_paf();
+            F_back();
+        }
+    }
 }
 
 
