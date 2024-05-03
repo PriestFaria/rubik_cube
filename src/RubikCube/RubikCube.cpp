@@ -472,10 +472,10 @@ void RubikCube::write_state(const char *fileName) {
 
 
 void RubikCube::y_swap_cube() {
-    for (int i = 0; i < 5; ++i) {
-        rotate_horizontal(0, 18);
-        rotate_horizontal(2, 18);
-        rotate_horizontal(1, 18);
+    for (int i = 0; i < 3; ++i) {
+        rotate_horizontal(0, 30);
+        rotate_horizontal(2, 30);
+        rotate_horizontal(1, 30);
 
         draw();
         Window::swapBuffers();
@@ -496,10 +496,10 @@ void RubikCube::y_backwards_swap_cube() {
 };
 
 void RubikCube::x_swap_cube() {
-    for (int i = 0; i < 5; ++i) {
-        rotate_vertical(2, 18.0f);
-        rotate_vertical(1, 18.0f);
-        rotate_vertical(0, 18.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_vertical(2, 30.0f);
+        rotate_vertical(1, 30.0f);
+        rotate_vertical(0, 30.0f);
 
         draw();
 
@@ -537,24 +537,24 @@ void RubikCube::white_to_up() {
 }
 
 void RubikCube::R() {
-    for (int i = 0; i < 5; ++i) {
-        rotate_vertical(2, 18.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_vertical(2, 30.0f);
         draw();
 
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     swap_vertical_matrix(2);
-    for (int i = 0; i < 5; ++i) {
-        rotate_vertical(2, 18.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_vertical(2, 30.0f);
         draw();
 
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     swap_vertical_matrix(2);
-    for (int i = 0; i < 5; ++i) {
-        rotate_vertical(2, 18.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_vertical(2, 30.0f);
         draw();
 
         Window::swapBuffers();
@@ -575,8 +575,8 @@ void RubikCube::R_back() {
 }
 
 void RubikCube::L() {
-    for (int i = 0; i < 5; ++i) {
-        rotate_vertical(0, 18.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_vertical(0, 30.0f);
         draw();
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -596,8 +596,8 @@ void RubikCube::L_back() {
 }
 
 void RubikCube::U() {
-    for (int i = 0; i < 5; ++i) {
-        rotate_horizontal(2, 18.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_horizontal(2, 30.0f);
 
         draw();
         Window::swapBuffers();
@@ -618,8 +618,8 @@ void RubikCube::U_back() {
 }
 
 void RubikCube::F() {
-    for (int i = 0; i < 5; ++i) {
-        rotate_back(18.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_back(30.0f);
         draw();
 
         Window::swapBuffers();
@@ -1188,6 +1188,7 @@ void RubikCube::make_corners() {
                 y();
                 x_swap_cube();
                 fl = 1;
+                break;
             }
         }
         if (!fl) {
