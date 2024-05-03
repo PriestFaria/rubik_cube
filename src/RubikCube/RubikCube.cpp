@@ -448,7 +448,7 @@ int RubikCube::load_from_file(const char *filename) {
 }
 
 void RubikCube::solve(float angle) {
-//    pif_paf();
+//    left_pif_paf();
     white_to_up();
     while (make_white_cross());
     make_perfect_cross();
@@ -943,10 +943,12 @@ void RubikCube::second_layer() {
         } else {
             y();
         }
-        if(cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec)
+        if (cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec){
             found = 1;
+        }
         if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
             cubes[1][2][2].get_color_by_n(up_vec) != cubes[2][1][1].get_color_by_n(right_vec)) {
+            std::cout << 1 << std::endl;
             U_back();
             left_pif_paf();
             y_back();
@@ -957,6 +959,7 @@ void RubikCube::second_layer() {
         }
         if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
             cubes[1][2][2].get_color_by_n(up_vec) == cubes[2][1][1].get_color_by_n(right_vec)) {
+            std::cout << 2 << std::endl;
             U();
             pif_paf();
             y();
@@ -965,21 +968,30 @@ void RubikCube::second_layer() {
             k = 0;
             found = 0;
         }
-        if(cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec) && cubes[2][1][1].get_color_by_n(right_vec) == cubes[1][1][2].get_color_by_n(front_vec)){
+        if (cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+            cubes[2][1][1].get_color_by_n(right_vec) == cubes[1][1][2].get_color_by_n(front_vec)) {
+            std::cout << 3 << std::endl;
             pif_paf();
             y();
             left_pif_paf();
+            U();
+            U();
             f = 1;
             k = 0;
+            found = 1;
         }
-        if(cubes[1][1][2].get_color_by_n(front_vec) != cubes[2][1][2].get_color_by_n(front_vec)
-        && cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec)
-        && cubes[2][1][2].get_color_by_n(right_vec) != cubes[1][1][2].get_color_by_n(front_vec)){
+        if (cubes[1][1][2].get_color_by_n(front_vec) != cubes[2][1][2].get_color_by_n(front_vec)
+            && cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec)
+            && cubes[2][1][2].get_color_by_n(right_vec) != cubes[1][1][2].get_color_by_n(front_vec)) {
+            std::cout << 4 << std::endl;
             pif_paf();
             y();
             left_pif_paf();
+            U();
+            U();
             f = 1;
             k = 0;
+            found = 1;
         }
         if (f == 0) {
             k++;
