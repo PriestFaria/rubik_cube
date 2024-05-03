@@ -943,7 +943,7 @@ void RubikCube::second_layer() {
         } else {
             y();
         }
-        if (cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec) {
+        if (cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec && cubes[1][2][2].white_n != up_vec && cubes[1][2][2].white_n != front_vec) {
             found = 1;
         }
         if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
