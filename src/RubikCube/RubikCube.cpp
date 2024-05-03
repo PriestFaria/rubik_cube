@@ -943,11 +943,12 @@ void RubikCube::second_layer() {
         } else {
             y();
         }
-        if (cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec){
+        if (cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec) {
             found = 1;
         }
         if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
-            cubes[1][2][2].get_color_by_n(up_vec) != cubes[2][1][1].get_color_by_n(right_vec) && cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec) {
+            cubes[1][2][2].get_color_by_n(up_vec) != cubes[2][1][1].get_color_by_n(right_vec) &&
+            cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec) {
             std::cout << 1 << std::endl;
             U_back();
             left_pif_paf();
@@ -958,7 +959,8 @@ void RubikCube::second_layer() {
             found = 0;
         }
         if (cubes[1][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
-            cubes[1][2][2].get_color_by_n(up_vec) == cubes[2][1][1].get_color_by_n(right_vec) && cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec) {
+            cubes[1][2][2].get_color_by_n(up_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+            cubes[1][2][2].yellow_n() != up_vec && cubes[1][2][2].yellow_n() != front_vec) {
             std::cout << 2 << std::endl;
             U();
             pif_paf();
@@ -969,7 +971,9 @@ void RubikCube::second_layer() {
             found = 0;
         }
         if (cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
-            cubes[2][1][1].get_color_by_n(right_vec) == cubes[1][1][2].get_color_by_n(front_vec)) {
+            cubes[2][1][1].get_color_by_n(right_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
+            cubes[2][1][2].get_color_by_n(right_vec) != cubes[1][1][2].get_color_by_n(front_vec) &&
+            cubes[2][1][2].yellow_n() != right_vec) {
             std::cout << 3 << std::endl;
             pif_paf();
             y();
@@ -981,7 +985,8 @@ void RubikCube::second_layer() {
         }
         if (cubes[1][1][2].get_color_by_n(front_vec) != cubes[2][1][2].get_color_by_n(front_vec)
             && cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec)
-            && cubes[2][1][2].get_color_by_n(right_vec) != cubes[1][1][2].get_color_by_n(front_vec) && cubes[2][1][2].yellow_n() != right_vec) {
+            && cubes[2][1][2].get_color_by_n(right_vec) != cubes[1][1][2].get_color_by_n(front_vec) &&
+            cubes[2][1][2].yellow_n() != right_vec) {
             std::cout << 4 << std::endl;
             pif_paf();
             y();
