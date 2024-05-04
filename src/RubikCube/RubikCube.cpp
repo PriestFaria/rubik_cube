@@ -1002,7 +1002,7 @@ void RubikCube::second_layer() {
         }
         if (f == 0) {
             k++;
-            if (k == 32)
+            if (k >= 32)
                 break;
         }
     }
