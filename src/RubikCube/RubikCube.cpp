@@ -1047,7 +1047,6 @@ void RubikCube::third_layer() {
     y();
     while (!(cubes[0][2][0].yellow_n() == -right_vec && cubes[0][0][0].yellow_n() == -right_vec &&
              cubes[0][2][2].yellow_n() == -right_vec && cubes[0][0][2].yellow_n() == -right_vec)) {
-        L();
         if (cubes[0][2][0].yellow_n() == up_vec) {
             pif_paf();
             pif_paf();
@@ -1058,7 +1057,9 @@ void RubikCube::third_layer() {
             pif_paf();
             pif_paf();
         }
+        L();
     }
+
 }
 
 void RubikCube::rebra() {
