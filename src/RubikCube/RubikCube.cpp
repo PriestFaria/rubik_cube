@@ -449,15 +449,27 @@ int RubikCube::load_from_file(const char *filename) {
 
 void RubikCube::solve(float angle) {
 //    left_pif_paf();
-    white_to_up();
-    while (make_white_cross());
-    make_perfect_cross();
-    first_layer();
-    second_layer();
-    yellow_cross();
-    third_layer();
-    rebra();
-    make_corners();
+    while (true) {
+        white_to_up();
+        while (make_white_cross());
+        make_perfect_cross();
+        first_layer();
+        second_layer();
+        yellow_cross();
+        third_layer();
+        rebra();
+        int r = make_corners();
+        if (r == 0) {
+            R();
+            pif_paf();
+            F();
+            y();
+            x_swap_cube();
+            R();
+        } else {
+            break;
+        }
+    }
 }
 
 void RubikCube::write_state(const char *fileName) {
@@ -472,10 +484,10 @@ void RubikCube::write_state(const char *fileName) {
 
 
 void RubikCube::y_swap_cube() {
-    for (int i = 0; i < 3; ++i) {
-        rotate_horizontal(0, 30);
-        rotate_horizontal(2, 30);
-        rotate_horizontal(1, 30);
+    for (int i = 0; i < 1; ++i) {
+        rotate_horizontal(0, 90);
+        rotate_horizontal(2, 90);
+        rotate_horizontal(1, 90);
 
         draw();
         Window::swapBuffers();
@@ -496,10 +508,10 @@ void RubikCube::y_backwards_swap_cube() {
 };
 
 void RubikCube::x_swap_cube() {
-    for (int i = 0; i < 3; ++i) {
-        rotate_vertical(2, 30.0f);
-        rotate_vertical(1, 30.0f);
-        rotate_vertical(0, 30.0f);
+    for (int i = 0; i < 1; ++i) {
+        rotate_vertical(2, 90.0f);
+        rotate_vertical(1, 90.0f);
+        rotate_vertical(0, 90.0f);
 
         draw();
 
@@ -537,24 +549,24 @@ void RubikCube::white_to_up() {
 }
 
 void RubikCube::R() {
-    for (int i = 0; i < 3; ++i) {
-        rotate_vertical(2, 30.0f);
+    for (int i = 0; i < 1; ++i) {
+        rotate_vertical(2, 90.0f);
         draw();
 
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     swap_vertical_matrix(2);
-    for (int i = 0; i < 3; ++i) {
-        rotate_vertical(2, 30.0f);
+    for (int i = 0; i < 1; ++i) {
+        rotate_vertical(2, 90.0f);
         draw();
 
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     swap_vertical_matrix(2);
-    for (int i = 0; i < 3; ++i) {
-        rotate_vertical(2, 30.0f);
+    for (int i = 0; i < 1; ++i) {
+        rotate_vertical(2, 90.0f);
         draw();
 
         Window::swapBuffers();
@@ -575,8 +587,8 @@ void RubikCube::R_back() {
 }
 
 void RubikCube::L() {
-    for (int i = 0; i < 3; ++i) {
-        rotate_vertical(0, 30.0f);
+    for (int i = 0; i < 1; ++i) {
+        rotate_vertical(0, 90.0f);
         draw();
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -596,8 +608,8 @@ void RubikCube::L_back() {
 }
 
 void RubikCube::U() {
-    for (int i = 0; i < 3; ++i) {
-        rotate_horizontal(2, 30.0f);
+    for (int i = 0; i < 1; ++i) {
+        rotate_horizontal(2, 90.0f);
 
         draw();
         Window::swapBuffers();
@@ -618,8 +630,8 @@ void RubikCube::U_back() {
 }
 
 void RubikCube::F() {
-    for (int i = 0; i < 3; ++i) {
-        rotate_back(30.0f);
+    for (int i = 0; i < 1; ++i) {
+        rotate_back(90.0f);
         draw();
 
         Window::swapBuffers();
@@ -1158,13 +1170,18 @@ bool RubikCube::check_if_up_solved() {
 }
 
 
-void RubikCube::make_corners() {
+int RubikCube::make_corners() {
+    int count = 0;
     while (!check_if_up_solved()) {
         int fl = 0;
         for (int i = 0; i < 4; ++i) {
             y();
             if (cubes[2][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
                 cubes[2][2][2].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec)) {
+                ++count;
+                if (count > 8) {
+                    return 0;
+                }
                 std::cout << "MAKE CORNERS" << std::endl;
                 y();
                 y();
@@ -1189,7 +1206,9 @@ void RubikCube::make_corners() {
                 y();
                 x_swap_cube();
                 fl = 1;
+
                 break;
+
             }
         }
         if (!fl) {
@@ -1216,7 +1235,10 @@ void RubikCube::make_corners() {
             y();
             x_swap_cube();
         }
+        count = 0;
+
     }
+    return 1;
 }
 
 

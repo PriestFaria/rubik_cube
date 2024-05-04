@@ -125,7 +125,7 @@ public:
 
     void rebra();
 
-    void make_corners();
+    int make_corners();
 
     void make_perfect_cross();
 
