@@ -129,6 +129,8 @@ public:
 
     void make_perfect_cross();
 
+    bool is_solved();
+
     bool check_if_up_solved();
 };
 

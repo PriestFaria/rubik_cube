@@ -449,7 +449,7 @@ int RubikCube::load_from_file(const char *filename) {
 
 void RubikCube::solve(float angle) {
 //    left_pif_paf();
-    while (true) {
+    while (!is_solved()) {
         white_to_up();
         while (make_white_cross());
         make_perfect_cross();
@@ -459,16 +459,7 @@ void RubikCube::solve(float angle) {
         third_layer();
         rebra();
         int r = make_corners();
-        if (r == 0) {
-            R();
-            pif_paf();
-            F();
-            y();
-            x_swap_cube();
-            R();
-        } else {
-            break;
-        }
+
     }
 }
 
@@ -983,6 +974,8 @@ void RubikCube::second_layer() {
             k = 0;
             found = 0;
         }
+        //БЫЛО ЧЕТЫРЕ КОЗЛА
+        // СКОЛЬКО????????
         if (cubes[2][1][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
             cubes[2][1][2].get_color_by_n(right_vec) == cubes[1][1][2].get_color_by_n(front_vec) &&
             cubes[2][1][2].yellow_n() != right_vec) {
@@ -1235,10 +1228,54 @@ int RubikCube::make_corners() {
             y();
             x_swap_cube();
         }
-        count = 0;
 
     }
     return 1;
+}
+
+bool RubikCube::is_solved() {
+    if (!(
+            //задняя грань
+            cubes[0][0][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec) &&
+            cubes[0][1][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec) &&
+            cubes[0][2][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec) &&
+            cubes[1][0][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec) &&
+            cubes[1][2][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec) &&
+            cubes[2][0][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec) &&
+            cubes[2][1][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec) &&
+            cubes[2][2][0].get_color_by_n(-front_vec) == cubes[1][1][0].get_color_by_n(-front_vec) &&
+
+            // верхняя грань
+            cubes[0][2][0].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+            cubes[1][2][0].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+            cubes[2][2][0].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+            cubes[0][2][1].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+            cubes[0][2][2].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+            cubes[1][2][2].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+            cubes[2][2][2].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+            cubes[2][2][1].get_color_by_n(up_vec) == cubes[1][2][1].get_color_by_n(up_vec) &&
+
+            // правая грань
+            cubes[2][0][0].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+            cubes[2][1][0].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+            cubes[2][2][0].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+            cubes[2][2][1].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+            cubes[2][0][1].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+            cubes[2][0][2].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+            cubes[2][1][2].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec) &&
+            cubes[2][2][2].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec)
+    )
+            ) {
+
+        std::cout << "NOT SOLVED\n";
+        F();
+        U();
+        y();
+        L();
+        return false;
+    }
+    std::cout << "SOLVED!!!\n";
+    return true;
 }
 
 
