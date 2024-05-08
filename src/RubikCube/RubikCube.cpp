@@ -475,10 +475,10 @@ void RubikCube::write_state(const char *fileName) {
 
 
 void RubikCube::y_swap_cube() {
-    for (int i = 0; i < 1; ++i) {
-        rotate_horizontal(0, 90);
-        rotate_horizontal(2, 90);
-        rotate_horizontal(1, 90);
+    for (int i = 0; i < 3; ++i) {
+        rotate_horizontal(0, 30);
+        rotate_horizontal(2, 30);
+        rotate_horizontal(1, 30);
 
         draw();
         Window::swapBuffers();
@@ -499,10 +499,10 @@ void RubikCube::y_backwards_swap_cube() {
 };
 
 void RubikCube::x_swap_cube() {
-    for (int i = 0; i < 1; ++i) {
-        rotate_vertical(2, 90.0f);
-        rotate_vertical(1, 90.0f);
-        rotate_vertical(0, 90.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_vertical(2, 30.0f);
+        rotate_vertical(1, 30.0f);
+        rotate_vertical(0, 30.0f);
 
         draw();
 
@@ -540,24 +540,24 @@ void RubikCube::white_to_up() {
 }
 
 void RubikCube::R() {
-    for (int i = 0; i < 1; ++i) {
-        rotate_vertical(2, 90.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_vertical(2, 30.0f);
         draw();
 
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     swap_vertical_matrix(2);
-    for (int i = 0; i < 1; ++i) {
-        rotate_vertical(2, 90.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_vertical(2, 30.0f);
         draw();
 
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
     swap_vertical_matrix(2);
-    for (int i = 0; i < 1; ++i) {
-        rotate_vertical(2, 90.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_vertical(2, 30.0f);
         draw();
 
         Window::swapBuffers();
@@ -578,8 +578,8 @@ void RubikCube::R_back() {
 }
 
 void RubikCube::L() {
-    for (int i = 0; i < 1; ++i) {
-        rotate_vertical(0, 90.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_vertical(0, 30.0f);
         draw();
         Window::swapBuffers();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -599,8 +599,8 @@ void RubikCube::L_back() {
 }
 
 void RubikCube::U() {
-    for (int i = 0; i < 1; ++i) {
-        rotate_horizontal(2, 90.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_horizontal(2, 30.0f);
 
         draw();
         Window::swapBuffers();
@@ -621,8 +621,8 @@ void RubikCube::U_back() {
 }
 
 void RubikCube::F() {
-    for (int i = 0; i < 1; ++i) {
-        rotate_back(90.0f);
+    for (int i = 0; i < 3; ++i) {
+        rotate_back(30.0f);
         draw();
 
         Window::swapBuffers();
@@ -819,51 +819,7 @@ void RubikCube::pif_paf_back() {
 void RubikCube::first_layer() {
     x_swap_cube();
     x_swap_cube();
-//    for (int i = 0; i < 4; ++i) {
-//        y();
-//        if (cubes[2][2][2].white_n == right_vec) {
-//            for (int k = 0; k < 4; ++k) {
-//                if (cubes[2][2][2].get_color_by_n(front_vec) == cubes[1][1][2].get_color_by_n(front_vec)
-//                    && cubes[2][2][2].get_color_by_n(up_vec) == cubes[2][1][1].get_color_by_n(right_vec)) {
-//                    pif_paf();
-//                    break;
-//                } else {
-//                    std::cout << "1" << std::endl;
-//                    U_back();
-//                    y();
-//                }
-//            }
-//        }
-//        if (cubes[2][2][2].white_n == front_vec) {
-//            for (int k = 0; k < 4; ++k) {
-//                if (cubes[2][2][2].get_color_by_n(up_vec) == cubes[1][1][2].get_color_by_n(front_vec)
-//                    && cubes[2][2][2].get_color_by_n(right_vec) == cubes[2][1][1].get_color_by_n(right_vec)) {
-//                    pif_paf_back();
-//                    break;
-//                } else {
-//                    std::cout << "3" << std::endl;
-//                    U();
-//                    y_back();
-//                }
-//            }
-//        }
-//        if (cubes[2][2][2].white_n == up_vec) {
-//            for (int k = 0; k < 4; ++k) {
-//                if (cubes[2][2][2].get_color_by_n(right_vec) == cubes[1][1][2].get_color_by_n(front_vec)
-//                    && cubes[2][2][2].get_color_by_n(front_vec) == cubes[2][1][1].get_color_by_n(right_vec)) {
-//                    pif_paf();
-//                    pif_paf();
-//                    pif_paf();
-//                    break;
-//                } else {
-//                    std::cout << "3" << std::endl;
-//                    U();
-//                    y_back();
-//                }
-//            }
-//
-//        }
-//    }
+
     int i = 0;
     int f = 0;
     for (int h = 0; h < 10; ++h) {
@@ -1052,6 +1008,8 @@ void RubikCube::third_layer() {
     y();
     while (!(cubes[0][2][0].yellow_n() == -right_vec && cubes[0][0][0].yellow_n() == -right_vec &&
              cubes[0][2][2].yellow_n() == -right_vec && cubes[0][0][2].yellow_n() == -right_vec)) {
+        L();
+
         if (cubes[0][2][0].yellow_n() == up_vec) {
             pif_paf();
             pif_paf();
@@ -1062,7 +1020,6 @@ void RubikCube::third_layer() {
             pif_paf();
             pif_paf();
         }
-        L();
     }
 
 }
@@ -1270,7 +1227,15 @@ bool RubikCube::is_solved() {
         std::cout << "NOT SOLVED\n";
         F();
         U();
-        y();
+        F2();
+        R();
+        x_swap_cube();
+        y_backwards_swap_cube();
+        R2();
+        y_swap_cube();
+
+        U();
+        F();
         L();
         return false;
     }
